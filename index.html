@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Francis's Academic Blog - AI 论文解读与技术分享</title>
+  <meta name="description" content="探索 AI 前沿，深度解读论文，分享技术思考">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-logo">Francis</a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">首页</a></li>
+        <li><a href="papers.html">论文解读</a></li>
+        <li><a href="blog.html">博客</a></li>
+        <li><a href="about.html">关于我</a></li>
+      </ul>
+      <button class="nav-mobile-toggle" aria-label="菜单">
+        <i data-lucide="menu"></i>
+      </button>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-text">
+          <div class="hero-greeting">
+            <span>你好，欢迎来到我的学术空间</span>
+          </div>
+          <h1 class="hero-title">
+            探索 <span class="highlight">AI</span> 前沿<br>
+            深度解读论文
+          </h1>
+          <p class="hero-description">
+            我是 Francis，一名 AI 研究者。在这里我分享对前沿学术论文的深度解读，
+            以及在技术探索路上的思考与感悟。让我们一起读懂改变世界的研究。
+          </p>
+          <div class="hero-actions">
+            <a href="papers.html" class="btn btn-primary">
+              <i data-lucide="book-open"></i>
+              浏览论文解读
+            </a>
+            <a href="about.html" class="btn btn-secondary">
+              <i data-lucide="user"></i>
+              了解更多
+            </a>
+          </div>
+        </div>
+        <div class="hero-avatar">
+          <div class="avatar-glow"></div>
+          <div class="avatar-wrapper">
+            <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20portrait%20young%20researcher%20minimalist%20style%20dark%20blue%20background%20elegant&image_size=square" alt="Francis">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Featured Papers</div>
+        <h2 class="section-title">精选论文解读</h2>
+        <p class="section-description">以 HTML5 卡片形式呈现论文核心观点，配有精确定位的图表解读</p>
+      </div>
+      <div id="papers-grid" class="papers-grid" data-limit="3"></div>
+      <div style="text-align: center; margin-top: 40px;">
+        <a href="papers.html" class="btn btn-secondary">
+          查看全部论文
+          <i data-lucide="arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Latest Posts</div>
+        <h2 class="section-title">最新博客文章</h2>
+        <p class="section-description">技术思考、学习笔记与经验分享</p>
+      </div>
+      <div id="blog-grid" class="blog-grid" data-limit="3"></div>
+      <div style="text-align: center; margin-top: 40px;">
+        <a href="blog.html" class="btn btn-secondary">
+          浏览全部文章
+          <i data-lucide="arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <h3>Francis's Blog</h3>
+          <p>探索 AI 前沿，深度解读论文，分享技术思考。<br>致力于让学术知识更加易于理解。</p>
+          <div class="footer-social">
+            <a href="https://github.com/larry919" class="social-link" target="_blank" aria-label="GitHub">
+              <i data-lucide="github"></i>
+            </a>
+            <a href="mailto:francis@example.com" class="social-link" aria-label="Email">
+              <i data-lucide="mail"></i>
+            </a>
+            <a href="#" class="social-link" aria-label="Twitter">
+              <i data-lucide="twitter"></i>
+            </a>
+          </div>
+        </div>
+        <div>
+          <h4>快速导航</h4>
+          <ul class="footer-links">
+            <li><a href="index.html">首页</a></li>
+            <li><a href="papers.html">论文解读</a></li>
+            <li><a href="blog.html">博客</a></li>
+            <li><a href="about.html">关于我</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>研究方向</h4>
+          <ul class="footer-links">
+            <li><a href="papers.html">自然语言处理</a></li>
+            <li><a href="papers.html">计算机视觉</a></li>
+            <li><a href="papers.html">生成模型</a></li>
+            <li><a href="papers.html">Transformer</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 Francis. Built with passion for knowledge sharing.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
