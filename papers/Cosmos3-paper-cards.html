@@ -92,7 +92,7 @@
 
     .nav {
       position: sticky;
-      top: 0;
+      top: 56px;
       z-index: 20;
       margin-bottom: 26px;
       padding: 12px;
@@ -115,7 +115,7 @@
     }
     .nav a:hover { background: var(--blue); color: white; }
 
-    section { margin: 44px 0; scroll-margin-top: 96px; }
+    section { margin: 44px 0; scroll-margin-top: 152px; }
     .section-head {
       display: flex;
       gap: 18px;
@@ -243,10 +243,81 @@
       .hero-main, .final { border-radius: 30px; }
       .nav { border-radius: 22px; }
     }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(248, 240, 223, .92);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--line);
+      padding: 0 24px;
+    }
+    .site-header-inner {
+      max-width: 1220px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+    .site-logo {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -.04em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .site-nav { display: flex; gap: 24px; align-items: center; }
+    .site-nav a {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .site-nav a:hover,
+    .site-nav a.active { color: var(--blue); }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--blue);
+      text-decoration: none;
+      margin-bottom: 20px;
+      transition: opacity .2s;
+    }
+    .back-link:hover { opacity: .7; }
+    .back-link svg { width: 16px; height: 16px; }
+    @media (max-width: 768px) {
+      .site-nav { gap: 14px; }
+      .site-nav a { font-size: 13px; }
+    }
+    @media (max-width: 480px) {
+      .site-nav .nav-hide-sm { display: none; }
+    }
   </style>
 </head>
 <body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a href="../index.html" class="site-logo">Francis</a>
+      <nav class="site-nav">
+        <a href="../index.html">首页</a>
+        <a href="../papers.html" class="active">论文解读</a>
+        <a href="../blog.html" class="nav-hide-sm">博客</a>
+        <a href="../about.html" class="nav-hide-sm">关于我</a>
+      </nav>
+    </div>
+  </header>
   <main class="page">
+    <a href="../papers.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      返回论文列表
+    </a>
     <header class="hero">
       <div class="hero-main">
         <div class="eyebrow">NVIDIA · 2026年6月 · 物理AI世界模型</div>
@@ -484,7 +555,7 @@
           <h3>Cosmos 3作为物理AI通用骨干</h3>
           <div class="paper-figure">
             <div class="paper-shot">
-              <img src="paper-assets/figure-1-overview-crop.png?v=1" alt="Figure 1: Cosmos 3 unified capabilities" loading="lazy">
+              <img src="../paper-assets/cosmos3/figure-1-overview-crop.png?v=1" alt="Figure 1: Cosmos 3 unified capabilities" loading="lazy">
             </div>
             <div class="paper-notes">
               <div class="note-block"><b>看什么</b><p>中心是Cosmos3全模态世界模型，上方输入5种模态（语言/图像/视频/音频/动作），下方输出覆盖6种模型类：VLM、图像生成、音视频生成、策略/WAM、前向动力学、逆向动力学。</p></div>
@@ -500,7 +571,7 @@
           <h3>Cosmos 3作为物理AI强起点</h3>
           <div class="paper-figure">
             <div class="paper-shot">
-              <img src="paper-assets/figure-2-pipeline-crop.png?v=1" alt="Figure 2: Training and deployment pipeline" loading="lazy">
+              <img src="../paper-assets/cosmos3/figure-2-pipeline-crop.png?v=1" alt="Figure 2: Training and deployment pipeline" loading="lazy">
             </div>
             <div class="paper-notes">
               <div class="note-block"><b>看什么</b><p>流程是：Pre-Training+Mid-Training得到通用Cosmos3基础模型，Post-Training分三个方向：Synthetic Data Generation（合成数据）、Task-Specific Specialization（任务专属：T2I/I2V/Policy/Interactive Env）。</p></div>
@@ -516,7 +587,7 @@
           <h3>Cosmos 3全面SOTA</h3>
           <div class="paper-figure">
             <div class="paper-shot">
-              <img src="paper-assets/table-1-results-overview.png?v=1" alt="Table 1: Results overview" loading="lazy">
+              <img src="../paper-assets/cosmos3/table-1-results-overview.png?v=1" alt="Table 1: Results overview" loading="lazy">
             </div>
             <div class="paper-notes">
               <div class="note-block"><b>看什么</b><p>列是各项能力（通用推理、机器人、基建、驾驶、T2I、T2V、I2V、音频、机器人FD、Policy），行是Cosmos3变体和对比模型（开源+闭源）；*是后训练版本，†是闭源模型，灰色表示模型不具备该能力。</p></div>
@@ -532,7 +603,7 @@
           <h3>Mixture-of-Transformers核心架构</h3>
           <div class="paper-figure">
             <div class="paper-shot">
-              <img src="paper-assets/figure-5-mot-architecture-crop.png?v=1" alt="Figure 5: MoT architecture" loading="lazy">
+              <img src="../paper-assets/cosmos3/figure-5-mot-architecture-crop.png?v=1" alt="Figure 5: MoT architecture" loading="lazy">
             </div>
             <div class="paper-notes">
               <div class="note-block"><b>看什么</b><p>左侧：输入分AR子序列（语言+ViT视觉，结尾&lt;EOS&gt;&lt;BOG&gt;）和DM子序列（VAE视觉+音频+动作）；每个Transformer层有独立LayerNorm/MLP，但共享自注意力；右侧：注意力mask——AR是因果三角掩码，DM是全注意力（看所有AR+DM token）。</p></div>
@@ -548,7 +619,7 @@
           <h3>带绝对时间调制的3D多模态位置编码</h3>
           <div class="paper-figure">
             <div class="paper-shot">
-              <img src="paper-assets/figure-6-mrope-crop.png?v=1" alt="Figure 6: 3D MRoPE" loading="lazy">
+              <img src="../paper-assets/cosmos3/figure-6-mrope-crop.png?v=1" alt="Figure 6: 3D MRoPE" loading="lazy">
             </div>
             <div class="paper-notes">
               <div class="note-block"><b>看什么</b><p>左侧：坐标分配示例——语言token t=h=w，视频token t/h/w三维，音频/动作只有t维度(h=w=0)，还有模态偏移k；右侧：FPS调制——16/24/30FPS下相同物理时间对应相同位置范围，不是按token计数。</p></div>
@@ -564,7 +635,7 @@
           <h3>Cosmos 3模型尺寸规格</h3>
           <div class="paper-figure">
             <div class="paper-shot">
-              <img src="paper-assets/table-2-model-variants.png?v=1" alt="Table 2: Model variants" loading="lazy">
+              <img src="../paper-assets/cosmos3/table-2-model-variants.png?v=1" alt="Table 2: Model variants" loading="lazy">
             </div>
             <div class="paper-notes">
               <div class="note-block"><b>看什么</b><p>三个变体：Edge(28层/2048隐层/2B稠密骨干/4B总参数)、Nano(36层/4096/8B/16B)、Super(64层/5120/32B/64B)；KV heads都是8，head dim都是128。</p></div>
@@ -580,7 +651,7 @@
           <h3>Cosmos 3全栈平台</h3>
           <div class="paper-figure">
             <div class="paper-shot">
-              <img src="paper-assets/figure-11-infrastructure-crop.png?v=1" alt="Figure 11: Infrastructure stack" loading="lazy">
+              <img src="../paper-assets/cosmos3/figure-11-infrastructure-crop.png?v=1" alt="Figure 11: Infrastructure stack" loading="lazy">
             </div>
             <div class="paper-notes">
               <div class="note-block"><b>看什么</b><p>四大支柱：Data Infrastructure→Training Infrastructure→Serving Infrastructure→Benchmark Infrastructure，是完整工业级平台。</p></div>
@@ -596,7 +667,7 @@
           <h3>文生图开源SOTA</h3>
           <div class="paper-figure">
             <div class="paper-shot">
-              <img src="paper-assets/table-11-t2i-results.png?v=1" alt="Table 11: Text-to-Image results" loading="lazy">
+              <img src="../paper-assets/cosmos3/table-11-t2i-results.png?v=1" alt="Table 11: Text-to-Image results" loading="lazy">
             </div>
             <div class="paper-notes">
               <div class="note-block"><b>看什么</b><p>UniGenBench分数，分原始prompt(Orig)和Physical AI prompt(Phys)，Cosmos3-Super-Text2Image在两者上都超过Qwen-Image-2512。</p></div>
@@ -612,7 +683,7 @@
           <h3>RoboLab-120 SOTA</h3>
           <div class="paper-figure">
             <div class="paper-shot">
-              <img src="paper-assets/table-19-policy-results.png?v=1" alt="Table 19: Robotics policy results" loading="lazy">
+              <img src="../paper-assets/cosmos3/table-19-policy-results.png?v=1" alt="Table 19: Robotics policy results" loading="lazy">
             </div>
             <div class="paper-notes">
               <div class="note-block"><b>看什么</b><p>RoboLab-120任务成功率，按语言特异性（L1-L3）和任务难度（Easy/Hard）分块，Cosmos3-Nano-Policy-DROID全面超过π0.5和Ctrl-World基线。</p></div>
@@ -628,7 +699,7 @@
           <h3>真实世界机器人基准第一</h3>
           <div class="paper-figure">
             <div class="paper-shot">
-              <img src="paper-assets/figure-26-roboarena-crop.png?v=1" alt="Figure 26: RoboArena leaderboard" loading="lazy">
+              <img src="../paper-assets/cosmos3/figure-26-roboarena-crop.png?v=1" alt="Figure 26: RoboArena leaderboard" loading="lazy">
             </div>
             <div class="paper-notes">
               <div class="note-block"><b>看什么</b><p>2026-05-30 RoboArena真实世界机器人基准排行榜截图，Cosmos3-Nano-Policy-DROID排名第一。</p></div>
