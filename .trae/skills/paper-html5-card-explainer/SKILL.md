@@ -59,14 +59,55 @@ Unless the user explicitly asks otherwise, produce:
   - Source PDF downloaded or copied into the workspace.
 - `papers/<paper-id>.txt`
   - Extracted full text with page markers.
-- `artifacts/paper-assets/`
-  - Precise original figure/table crops.
+- `paper-assets/<paper-id>/`
+  - Precise original figure/table crops, organized by paper ID to avoid collisions.
+- `paper-assets/<paper-id>/crop-plan.json`
+  - Crop plan for this specific paper.
 - `reports/<paper-title>-doc-10min-digest.md`
   - Markdown report used as the content source of truth.
-- `artifacts/<paper-title>-paper-cards.html`
-  - Final self-contained HTML5 card explainer.
+- `papers/<paper-title>-paper-cards.html`
+  - Final self-contained HTML5 card explainer, placed in the `papers/` directory.
 
 The HTML page must be directly openable in a browser. Do not require a frontend build pipeline unless the user asks for one.
+
+### Paper ID Convention
+
+Every paper must have a unique slug identifier (e.g., `cosmos3`, `attention-is-all-you-need`, `skillopt`).
+This slug is used to:
+
+1. Name the asset subdirectory: `paper-assets/<paper-id>/`
+2. Prefix image references in HTML: `../paper-assets/<paper-id>/figure-1-overview-crop.png`
+3. Identify the paper in `papers-manifest.json`
+
+### HTML Image Path Convention
+
+Since the HTML file lives in `papers/` and assets live in `paper-assets/<paper-id>/`,
+all image `src` attributes in the HTML must use the relative path `../paper-assets/<paper-id>/`.
+
+Example for a paper with slug `cosmos3`:
+
+```html
+<img src="../paper-assets/cosmos3/figure-1-overview-crop.png?v=1" alt="Figure 1" loading="lazy">
+```
+
+### papers-manifest.json
+
+After generating a paper, append an entry to `papers-manifest.json` at the project root
+so the paper appears on the blog's paper list page:
+
+```json
+{
+  "id": "paper-<slug>",
+  "htmlFile": "<filename>.html",
+  "title": "Full Paper Title",
+  "authors": ["Author1", "Author2"],
+  "venue": "Conference/Journal",
+  "year": 2026,
+  "tags": ["Tag1", "Tag2"],
+  "thumbnail": "URL or path to thumbnail image",
+  "abstract": "Brief abstract of the paper."
+}
+```
 
 ## Workflow
 
@@ -74,19 +115,20 @@ The HTML page must be directly openable in a browser. Do not require a frontend 
 2. Extract text with page markers.
 3. Identify key figures, tables, formulas, methods, experiments, ablations, transfer results, limitations, and conclusion.
 4. Create a crop plan for original figures/tables.
-5. Render precise crops with `scripts/crop_pdf_assets.py`.
+5. Render precise crops with `scripts/crop_pdf_assets.py` into `paper-assets/<paper-id>/`.
 6. Build the Markdown report as the single source of truth.
 7. Generate HTML from `templates/html5-card-template.html` and `templates/card-snippets.md`.
 8. Validate with `scripts/validate_artifact.py`.
-9. Preview through a local static server.
-10. Return links to the HTML, Markdown report, assets, and validation results.
+9. Append entry to `papers-manifest.json` so the paper appears on the blog list page.
+10. Preview through a local static server.
+11. Return links to the HTML, Markdown report, assets, and validation results.
 
 ## Text Extraction
 
 Use `pdftotext` if available:
 
 ```bash
-mkdir -p papers reports artifacts artifacts/paper-assets
+mkdir -p papers reports paper-assets/<paper-id>
 pdftotext -layout papers/<paper-id>.pdf papers/<paper-id>.txt
 ```
 
@@ -201,8 +243,8 @@ Render assets:
 ```bash
 python .trae/skills/paper-html5-card-explainer/scripts/crop_pdf_assets.py \
   --pdf papers/<paper-id>.pdf \
-  --plan artifacts/paper-assets/crop-plan.json \
-  --out-dir artifacts/paper-assets \
+  --plan paper-assets/<paper-id>/crop-plan.json \
+  --out-dir paper-assets/<paper-id> \
   --scale 3.0
 ```
 
@@ -283,7 +325,7 @@ Run:
 
 ```bash
 python .trae/skills/paper-html5-card-explainer/scripts/validate_artifact.py \
-  --html artifacts/<paper-title>-paper-cards.html
+  --html papers/<paper-title>-paper-cards.html
 ```
 
 Before final response, verify:
@@ -292,14 +334,16 @@ Before final response, verify:
 - Text extraction succeeded.
 - Page count and text size were checked.
 - Key figures/tables were identified with page numbers.
-- Original figures/tables were rendered into `artifacts/paper-assets/`.
+- Original figures/tables were rendered into `paper-assets/<paper-id>/`.
 - Figure screenshots are figure-body crops, not full pages.
 - Table screenshots include complete tables and necessary notes, but not unrelated paragraphs.
 - Recropped images use new file names or cache-busting query strings.
+- HTML image `src` attributes use `../paper-assets/<paper-id>/` relative paths.
 - HTML references all image assets with no missing paths.
 - HTML parses successfully.
 - The page opens through a local static server.
 - Markdown report and HTML are consistent.
+- An entry was appended to `papers-manifest.json`.
 
 ## Final Response
 
@@ -319,9 +363,16 @@ This skill was refined from the SkillOpt paper workflow:
 
 - PDF: `papers/arxiv-2605.23904.pdf`
 - Extracted text: `papers/arxiv-2605.23904.txt`
-- HTML: `artifacts/skillopt-paper-cards.html`
+- HTML: `papers/skillopt-paper-cards.html`
 - Markdown: `reports/SkillOpt-doc-10min-digest.md`
-- Original assets: `artifacts/paper-assets/`
+- Original assets: `paper-assets/skillopt/`
+
+Cosmos 3 paper example:
+
+- PDF: `papers/cosmos3.pdf`
+- HTML: `papers/Cosmos3-paper-cards.html`
+- Original assets: `paper-assets/cosmos3/`
+- Manifest entry: `papers-manifest.json` (id: `paper-cosmos3`)
 
 Important crop examples:
 

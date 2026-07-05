@@ -46,7 +46,7 @@ Use this for every original figure/table asset. The screenshot must be a precise
   <h3>{{VISUAL_CARD_TITLE}}</h3>
   <div class="paper-figure">
     <div class="paper-shot">
-      <img src="paper-assets/{{PRECISE_CROP_ASSET}}?v={{CACHE_VERSION}}" alt="{{ALT_TEXT}}" loading="lazy">
+      <img src="../paper-assets/{{PAPER_ID}}/{{PRECISE_CROP_ASSET}}?v={{CACHE_VERSION}}" alt="{{ALT_TEXT}}" loading="lazy">
     </div>
     <div class="paper-notes">
       <div class="note-block"><b>看什么</b><p>{{WHAT_TO_LOOK_AT}}</p></div>

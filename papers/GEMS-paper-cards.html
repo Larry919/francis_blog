@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GEMS 论文卡片精读 - Francis's Academic Blog</title>
+  <style>
+    :root {
+      --paper: #f8f0df;
+      --ink: #17130d;
+      --muted: #756b5b;
+      --line: rgba(23, 19, 13, .15);
+      --blue: #1f55e5;
+      --green: #2f7d56;
+      --red: #c94b3c;
+      --amber: #f1b13f;
+      --shadow: 0 28px 80px rgba(41, 29, 8, .12);
+      --radius: 28px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 4%, rgba(241, 177, 63, .30), transparent 28rem),
+        radial-gradient(circle at 92% 12%, rgba(31, 85, 229, .20), transparent 30rem),
+        linear-gradient(135deg, #fbf5e8 0%, #eee2cd 100%);
+      font-family: "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(23, 19, 13, .035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(23, 19, 13, .025) 1px, transparent 1px);
+      background-size: 32px 32px;
+      z-index: -1;
+    }
+    a { color: inherit; text-decoration: none; }
+    .page { width: min(1220px, calc(100% - 36px)); margin: 0 auto; }
+    .hero {
+      min-height: 88vh;
+      display: grid;
+      grid-template-columns: 1.16fr .84fr;
+      gap: 28px;
+      align-items: end;
+      padding: 56px 0 42px;
+    }
+    .hero-main, .stat-card, .card {
+      border: 1px solid var(--line);
+      background: rgba(255, 250, 240, .74);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+    .hero-main { padding: clamp(28px, 5vw, 56px); border-radius: 42px; }
+    .eyebrow {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 18px 0;
+      max-width: 900px;
+      font-size: clamp(36px, 6vw, 72px);
+      line-height: .92;
+      letter-spacing: -.055em;
+    }
+    .hero-subtitle {
+      max-width: 760px;
+      color: #453d31;
+      font-size: clamp(16px, 1.8vw, 20px);
+      line-height: 1.75;
+      margin: 0;
+    }
+    .hero-side { display: grid; gap: 18px; }
+    .stat-card { padding: 24px; border-radius: 30px; }
+    .stat-card b {
+      display: block;
+      color: var(--blue);
+      font-size: 42px;
+      line-height: 1;
+      letter-spacing: -.05em;
+    }
+    .stat-card span { display: block; margin-top: 8px; color: var(--muted); line-height: 1.55; font-size: 14px; }
+    .stat-card.green b { color: var(--green); }
+    .stat-card.red b { color: var(--red); }
+    .nav {
+      position: sticky;
+      top: 56px;
+      z-index: 20;
+      margin-bottom: 26px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 250, 240, .82);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 14px 40px rgba(41, 29, 8, .08);
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+    }
+    .nav a {
+      flex: 0 0 auto;
+      padding: 10px 14px;
+      border-radius: 999px;
+      color: #4f4639;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .nav a:hover { background: var(--blue); color: white; }
+    section { margin: 44px 0; scroll-margin-top: 152px; }
+    .section-head {
+      display: flex;
+      gap: 18px;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(28px, 4.2vw, 50px);
+      line-height: .95;
+      letter-spacing: -.055em;
+    }
+    .section-head p { max-width: 540px; color: var(--muted); line-height: 1.7; margin: 0; font-size: 14.5px; }
+    .cards { display: grid; grid-template-columns: repeat(12, 1fr); gap: 18px; }
+    .card {
+      grid-column: span 4;
+      min-height: 200px;
+      padding: 22px;
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .card.wide { grid-column: span 8; }
+    .card.full { grid-column: 1 / -1; }
+    .card.blue { background: linear-gradient(135deg, #143fc1, #1f55e5); color: white; }
+    .card.dark { background: #16130e; color: #fff6e7; }
+    .card.green { background: linear-gradient(135deg, #266749, #359066); color: white; }
+    .card.red { background: linear-gradient(135deg, #b23b31, #d95a45); color: white; }
+    .card.amber { background: linear-gradient(135deg, #f1b13f, #f7d58a); }
+    .card.blue p, .card.dark p, .card.green p, .card.red p,
+    .card.blue li, .card.dark li, .card.green li, .card.red li,
+    .card.blue .source, .card.dark .source, .card.green .source, .card.red .source {
+      color: rgba(255, 255, 255, .85);
+    }
+    .kicker {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .blue .kicker, .dark .kicker, .green .kicker, .red .kicker { color: rgba(255,255,255,.70); }
+    h3 { margin: 0 0 10px; font-size: 21px; line-height: 1.12; letter-spacing: -.03em; }
+    p, li { color: #50483a; line-height: 1.7; font-size: 14.5px; }
+    ul { padding-left: 18px; margin: 8px 0; }
+    li { margin-bottom: 6px; }
+    .source {
+      display: inline-flex;
+      margin-top: 12px;
+      padding: 5px 10px;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      opacity: .82;
+    }
+    .formula {
+      padding: 16px;
+      border-radius: 18px;
+      background: #17130d;
+      color: #fff4df;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      overflow-x: auto;
+      line-height: 1.7;
+      margin: 12px 0;
+      font-size: 13px;
+    }
+    .paper-figure {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(260px, .92fr);
+      gap: 16px;
+      align-items: stretch;
+    }
+    .paper-shot {
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #fff;
+      max-height: 680px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .paper-shot img {
+      display: block;
+      max-width: 100%;
+      max-height: 680px;
+      object-fit: contain;
+      background: #fff;
+    }
+    .paper-notes { display: grid; gap: 10px; align-content: start; }
+    .note-block {
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      padding: 13px;
+      background: rgba(255,255,255,.55);
+    }
+    .note-block b { display: block; margin-bottom: 4px; color: var(--blue); font-size: 13px; }
+    .note-block p { margin: 0; font-size: 13px; line-height: 1.6; }
+    .final {
+      margin: 56px 0 72px;
+      padding: clamp(26px, 5vw, 50px);
+      border-radius: 42px;
+      background: #17130d;
+      color: #fff5e4;
+      box-shadow: var(--shadow);
+    }
+    .final h2 {
+      margin: 0 0 16px;
+      font-size: clamp(30px, 4.5vw, 56px);
+      line-height: .95;
+      letter-spacing: -.055em;
+    }
+    .final p { color: rgba(255,255,255,.82); font-size: 19px; line-height: 1.75; margin: 0; }
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(248, 240, 223, .92);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--line);
+      padding: 0 24px;
+    }
+    .site-header-inner {
+      max-width: 1220px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+    .site-logo {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -.04em;
+      color: var(--ink);
+    }
+    .site-nav { display: flex; gap: 24px; align-items: center; }
+    .site-nav a {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--muted);
+      transition: color .2s;
+    }
+    .site-nav a:hover, .site-nav a.active { color: var(--blue); }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--blue);
+      margin-bottom: 20px;
+    }
+    .back-link:hover { opacity: .7; }
+    .back-link svg { width: 16px; height: 16px; }
+    .paper-links { display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
+    .paper-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.6);
+      transition: all .2s;
+    }
+    .paper-link-btn:hover { background: var(--blue); color: white; border-color: var(--blue); }
+    @media (max-width: 980px) {
+      .hero, .paper-figure { grid-template-columns: 1fr; }
+      .card, .card.wide { grid-column: 1 / -1; }
+      .section-head { display: block; }
+      .section-head p { margin-top: 10px; }
+    }
+    @media (max-width: 640px) {
+      .page { width: min(100% - 22px, 1220px); }
+      .hero { padding-top: 24px; }
+      .hero-main, .final { border-radius: 30px; }
+      .nav { border-radius: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a href="../index.html" class="site-logo">Francis</a>
+      <nav class="site-nav">
+        <a href="../index.html">首页</a>
+        <a href="../papers.html" class="active">论文解读</a>
+        <a href="../blog.html" class="nav-hide-sm">博客</a>
+        <a href="../about.html" class="nav-hide-sm">关于我</a>
+      </nav>
+    </div>
+  </header>
+  <main class="page">
+    <a href="../papers.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      返回论文列表
+    </a>
+    <header class="hero">
+      <div class="hero-main">
+        <div class="eyebrow">arXiv 2026 · cs.CL / cs.LG · Paper Explainer</div>
+        <h1>GEMS: 几何约束实现大模型多语义叠加</h1>
+        <p class="hero-subtitle">现有激活引导（Activation Steering）只能单一方向控制LLM行为，多方向叠加即崩溃。GEMS揭示崩溃的两个独立根源——分布偏移与方向干扰，并通过纯几何约束（范数保持+实时正交化+o_proj精确注入+高斯包络）实现免训练的多语义并行引导，GSM8K三方向注入从4%崩溃恢复至98%准确率。</p>
+        <div class="paper-links">
+          <a href="https://arxiv.org/abs/2606.19946" target="_blank" class="paper-link-btn">📄 arXiv 论文</a>
+          <a href="https://github.com/LuLu663939/gems-multi-semantic-steering" target="_blank" class="paper-link-btn">💻 GitHub 代码</a>
+        </div>
+      </div>
+      <aside class="hero-side">
+        <div class="stat-card green"><b>98%</b><span>GSM8K三方向注入准确率（基线92%，无约束加法崩溃至4%）</span></div>
+        <div class="stat-card"><b>+2.2%</b><span>Wikitext-2 PPL增幅（14.82→15.15），ActAdd飙升1700倍至25173</span></div>
+        <div class="stat-card red"><b>4%→98%</b><span>仅通过几何约束（无需训练）实现的崩溃恢复幅度</span></div>
+      </aside>
+    </header>
+
+    <nav class="nav" aria-label="页面目录">
+      <a href="#position">定位</a>
+      <a href="#logic">框架</a>
+      <a href="#claims">结论</a>
+      <a href="#method">方法</a>
+      <a href="#flows">流程</a>
+      <a href="#original-figures">原图原表</a>
+      <a href="#experiments">实验</a>
+      <a href="#pitfalls">难点</a>
+      <a href="#applications">落地</a>
+    </nav>
+
+    <section id="position">
+      <div class="section-head"><h2>1. 论文定位</h2><p>属于LLM可解释性与模型控制领域，解决多方向激活引导的崩溃问题</p></div>
+      <div class="cards">
+        <article class="card blue">
+          <div class="kicker">领域</div>
+          <h3>LLM激活引导 / 可解释性</h3>
+          <p>Activation Steering通过推理时修改中间隐藏状态控制模型行为，无需微调。现有方法（ActAdd、RepE、ITI、CAA）均局限于单一方向控制，多方向叠加即崩溃。</p>
+          <span class="source">§1 Introduction, 第1页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">核心问题</div>
+          <h3>为什么多方向注入会崩溃？</h3>
+          <p>此前认为崩溃是激活引导范式的固有局限，多方向控制必须训练。GEMS证明崩溃有明确几何结构，可以通过纯前向传播约束解决。</p>
+          <span class="source">§2 Motivation, 第3-4页</span>
+        </article>
+        <article class="card amber">
+          <div class="kicker">关键贡献</div>
+          <h3>免训练 · 架构无关</h3>
+          <p>无需修改模型权重或引入优化步骤，纯几何操作即可在3B-31B模型上迁移。四个约束：范数保持、o_proj注入、实时正交化、高斯包络。</p>
+          <span class="source">§3 Method, 第4-6页</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="logic">
+      <div class="section-head"><h2>2. 全文框架</h2><p>诊断→设计→验证的清晰论证链条</p></div>
+      <div class="cards">
+        <article class="card wide">
+          <div class="kicker">论证结构</div>
+          <h3>四个层次的因果归因</h3>
+          <p><b>第一层 诊断（§2）</b>：通过两个诊断探针将崩溃分解为分布偏移+方向干扰两个独立根源<br>
+          <b>第二层 设计（§3）</b>：每个根源对应一个几何约束，加上注入点选择和层间调制<br>
+          <b>第三层 验证（§4）</b>：定性输出→信号留存→定量消融+PPL+层级别探针→跨架构迁移<br>
+          <b>第四层 边界（§5）</b>：明确GEMS只能在已有能力空间内重新加权，不能创造新能力</p>
+          <span class="source">全文结构, 第1-11页</span>
+        </article>
+        <article class="card dark">
+          <div class="kicker">约束层次</div>
+          <h3>前提约束 vs 增强约束</h3>
+          <p><b>前提（必须）</b>：范数保持 + o_proj注入 → 违反即崩溃到4%<br>
+          <b>增强（重要）</b>：正交化 → 保持语义可区分性<br>
+          <b>优化（推荐）</b>：高斯包络 → 减少边界层扰动</p>
+          <span class="source">§4.3 消融实验, 第8页</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="claims">
+      <div class="section-head"><h2>3. 核心结论</h2><p>六个经过实验验证的核心发现</p></div>
+      <div class="cards">
+        <article class="card red">
+          <div class="kicker">Conclusion 1</div>
+          <h3>崩溃有两个独立根源</h3>
+          <p>分布偏移（范数累积推出训练分布）和方向干扰（非正交向量互相抵消）必须同时解决，解决一个不够。</p>
+          <span class="source">§2, Figure 2-4, 第3-4页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Conclusion 2</div>
+          <h3>范数保持+o_proj是必要前提</h3>
+          <p>违反任一条立即崩溃（GSM8K 4%），无论其他约束如何。这是最关键的架构洞见。</p>
+          <span class="source">Table 3 (T6/T8), 第8页</span>
+        </article>
+        <article class="card green">
+          <div class="kicker">Conclusion 3</div>
+          <h3>三方向注入保持98%准确率</h3>
+          <p>GEMS Full (T2)在叠加三个非数学语义方向后，GSM8K准确率98%，甚至超过纯基线92%。</p>
+          <span class="source">Table 3 (T2), 第8页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Conclusion 4</div>
+          <h3>PPL仅增2.2%</h3>
+          <p>Wikitext-2开放域PPL从14.82→15.15，语言质量几乎无损。ActAdd无约束加法飙至25173（1700倍）。</p>
+          <span class="source">Table 4, 第9页</span>
+        </article>
+        <article class="card blue">
+          <div class="kicker">Conclusion 5</div>
+          <h3>正交化信号穿越FFN存活</h3>
+          <p>层级别探针（Δcos>0, Cohen's dz>1.8）证明正交化后的专家信号经过后干预层非线性变换后仍保持语义特异性。</p>
+          <span class="source">§4.2 + Table 5, 第7,9页</span>
+        </article>
+        <article class="card amber">
+          <div class="kicker">Conclusion 6</div>
+          <h3>跨架构3B-31B迁移</h3>
+          <p>Llama-3.2-3B、Qwen3.6-27B、Gemma-4-31B上均观察到语义偏移，几何约束作用于残差流通用属性。</p>
+          <span class="source">§4.4, 第10-11页</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="method">
+      <div class="section-head"><h2>4. 方法精讲</h2><p>四个几何约束的技术细节与数学原理</p></div>
+      <div class="cards">
+        <article class="card wide">
+          <div class="kicker">Tech Point 1</div>
+          <h3>对比专家向量提取</h3>
+          <p>对每个语义方向定义一对对比prompt：base prompt是中性任务查询，expert prompt是表达特定语义立场的陈述句。第l层的专家方向 = Normalize(mean-pooled(h_expert) - mean-pooled(h_base))，排除首尾special token以避免边界异常。</p>
+          <div class="formula">v_i^(l) = Normalize( h̄_expert_i^(l) − h̄_base^(l) )</div>
+          <span class="source">§3.1, 第4-5页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Tech Point 2</div>
+          <h3>实时Gram-Schmidt正交化</h3>
+          <p>每个token在每个hook层，先计算当前注意力方向u_δ，然后依次将每个专家向量投影到{u_δ, e_1,...,e_{k-1}}的正交补空间。</p>
+          <span class="source">§3.2 Eq.1-2, 第5页</span>
+        </article>
+        <article class="card wide dark">
+          <div class="kicker">Formula</div>
+          <h3>正交化公式</h3>
+          <div class="formula">u_δ = ΔH / ‖ΔH‖    （当前注意力方向单位化）<br>e_k = Normalize( v_k − (v_k·u_δ)·u_δ − Σ_{j=1}^{k-1} (v_k·e_j)·e_j )</div>
+          <p>确保每个e_k与u_δ和所有之前的e_j正交，消除方向间的线性依赖。专家顺序可任意调整。</p>
+          <span class="source">Eq.1-2, 第5页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Tech Point 3</div>
+          <h3>范数保持加权叠加</h3>
+          <p>H_target = ‖ΔH‖ · (w_base·u_δ + Σw_i·e_i)，权重满足 w²_base + Σw²_i = 1。严格保持输出范数等于原始注意力输出范数。</p>
+          <span class="source">§3.3, 第5-6页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Tech Point 4</div>
+          <h3>o_proj精确注入点</h3>
+          <p>Hook只拦截注意力输出投影(o_proj)，MLP通路完全不触碰：H_new = H_old + ΔH_mlp + H_out(ΔH_attn)。MLP编码事实知识，污染它立即崩溃。</p>
+          <span class="source">§3.3 Eq.3, 第6页; Table 3 T8, 第8页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Tech Point 5</div>
+          <h3>高斯包络层间调制</h3>
+          <p>E(l) = exp(−(l−μ)²/(2σ²))，集中干预于中间层（μ=14, σ=3），首尾层平滑衰减。L16-L20额外余弦衰减τ(l)。</p>
+          <span class="source">§3.4 Eq.4, 第5-6页</span>
+        </article>
+        <article class="card wide">
+          <div class="kicker">Tech Point 6</div>
+          <h3>层间插值与部署</h3>
+          <p>每层输出为原始激活与引导激活的插值：H_out = Normalize((1−E(l))·ΔH + E(l)·H_target) · ‖ΔH‖。GEMS在ActAdd基础上hook前向传播，无需修改模型图或添加训练参数。默认参数：干预层L9-L20（12层），强度[0.12, 0.08, 0.04]。</p>
+          <span class="source">§3.4 + Appendix C, 第6页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Tech Point 7</div>
+          <h3>为什么o_proj？</h3>
+          <p>注意力输出承载上下文关系信息，MLP承载事实知识。在o_proj处注入可以引导注意力模式而不破坏知识库，这是论文最反直觉但最有效的发现。</p>
+          <span class="source">§3.3 + §4.3 T8消融, 第6,8页</span>
+        </article>
+        <article class="card green">
+          <div class="kicker">Tech Point 8</div>
+          <h3>语义特异性验证</h3>
+          <p>每个专家方向的native词汇簇在三方向叠加后仍保持高激活（70-88%正向率，p&lt;0.01），随机正交向量仅48%。证明效果来自语义而非几何操作本身。</p>
+          <span class="source">Table 2, 第7页</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="flows">
+      <div class="section-head"><h2>5. 训练与部署流程</h2><p>GEMS是免训练方法，部署流程极轻量</p></div>
+      <div class="cards">
+        <article class="card">
+          <div class="kicker">Step 1</div>
+          <h3>提取专家向量</h3>
+          <p>为每个目标语义方向准备base/expert prompt对，在目标模型上跑前向传播，取指定层的mean-pooled激活差异并归一化。一次性提取，可复用。</p>
+          <span class="source">§3.1, 第4-5页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Step 2</div>
+          <h3>配置Hook参数</h3>
+          <p>设置干预层范围（如L9-L20）、高斯包络参数（μ,σ）、各方向强度权重w_i。跨模型迁移时按深度比例映射层号。</p>
+          <span class="source">§3.4 + Table 20, 第5-6,10页</span>
+        </article>
+        <article class="card blue">
+          <div class="kicker">Step 3</div>
+          <h3>推理时前向Hook</h3>
+          <p>每个token生成时，在o_proj后执行：正交化→范数保持加权→高斯包络调制→插值。全部是向量运算，延迟开销极小。</p>
+          <span class="source">Appendix C Algorithm 1-2</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="original-figures">
+      <div class="section-head"><h2>6. 论文原图与原表精读</h2><p>精确裁剪的原始图表，配详细解读</p></div>
+      <div class="cards">
+        <article class="card full">
+          <div class="kicker">Figure 1 · 整体架构</div>
+          <h3>GEMS架构：三个核心几何约束的可视化</h3>
+          <div class="paper-figure">
+            <div class="paper-shot">
+              <img src="../paper-assets/gems/figure-1-architecture-crop.png?v=1" alt="Figure 1: GEMS Architecture" loading="lazy">
+            </div>
+            <div class="paper-notes">
+              <div class="note-block"><b>看什么</b><p>三个子图：(a)高斯包络在L14达到峰值、向L12和L16衰减；(b)Hook精确拦截Self-Attn的o_proj输出ΔH_attn，MLP通路ΔH_mlp完全不被触碰；(c)原始专家向量v_i（浅红色）高度共线（cos 0.74-0.87），正交化后的e_i（红色）方向分离，约束在单位球内w²_base+Σw²_i=1。</p></div>
+              <div class="note-block"><b>说明什么</b><p>这是GEMS方法的全景图。三个约束如何协同：高斯包络控制"在哪几层注入多强"，o_proj Hook控制"在什么位置注入"，正交化+范数保持控制"注入什么方向和多大强度"。</p></div>
+              <div class="note-block"><b>不要误读</b><p>子图(c)中的"Raw Experts (v_i, interfering)"不是说原始向量是错误的，而是说它们在共享子空间高度重叠，直接相加会导致信号抵消。正交化不是改变语义，而是将它们分解到独立方向。</p></div>
+              <span class="source">原图：Figure 1，第2页</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card full">
+          <div class="kicker">Figure 2 · 诊断证据</div>
+          <h3>分布偏移：残差流范数在干预窗口内飙升3.4倍</h3>
+          <div class="paper-figure">
+            <div class="paper-shot">
+              <img src="../paper-assets/gems/figure-2-norm-deviation-crop.png?v=1" alt="Figure 2: Per-layer residual stream norm" loading="lazy">
+            </div>
+            <div class="paper-notes">
+              <div class="note-block"><b>看什么</b><p>蓝色Baseline曲线从L0(2.1)平滑增长到L31(84.7)。红色ActAdd曲线在干预窗口L9-L20（阴影区域）内急剧加速上升，在L18-L20达到基线的3.4倍，然后持续高位传播到后续层。</p></div>
+              <div class="note-block"><b>说明什么</b><p>加性注入在多层累积导致范数爆炸，将激活值推出模型训练分布——这是"分布偏移"崩溃源的直接可视化证据。基线的平滑范数增长是训练期间学到的稳定模式。</p></div>
+              <div class="note-block"><b>不要误读</b><p>不是范数大就一定崩溃，关键是偏离了训练时的范数增长轨迹。LayerNorm虽然归一化但残差连接使扰动仍可传播。</p></div>
+              <span class="source">原图：Figure 2，第3页</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card full">
+          <div class="kicker">Figure 3 · 诊断证据</div>
+          <h3>概率分布崩溃：Top-1从43%降到11%，熵翻倍</h3>
+          <div class="paper-figure">
+            <div class="paper-shot">
+              <img src="../paper-assets/gems/figure-3-prob-collapse-crop.png?v=1" alt="Figure 3: Token probability distribution" loading="lazy">
+            </div>
+            <div class="paper-notes">
+              <div class="note-block"><b>看什么</b><p>蓝色Baseline在top-1 token "we"上集中了43%概率，分布陡峭。红色ActAdd分布极度平坦，top-1 "self"仅11%，大量token获得非平凡概率质量。</p></div>
+              <div class="note-block"><b>说明什么</b><p>范数爆炸的最终后果：模型失去对输入上下文的约束，输出不再由上下文驱动而是被注入的扰动主导。熵从3.37→7.37意味着输出变得接近随机。</p></div>
+              <div class="note-block"><b>不要误读</b><p>这不是"多样性增加"的正面效果——看定性输出（Table 1），ActAdd产生的是重复无意义内容（"self-moralizing certainties of self-vulnerability"），而非多样化的有意义输出。</p></div>
+              <span class="source">原图：Figure 3，第3页</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card full">
+          <div class="kicker">Figure 4 · 诊断证据</div>
+          <h3>方向干扰：并行注入时各方向对齐度下降34-43%</h3>
+          <div class="paper-figure">
+            <div class="paper-shot">
+              <img src="../paper-assets/gems/figure-4-directional-interference-crop.png?v=1" alt="Figure 4: Directional interference" loading="lazy">
+            </div>
+            <div class="paper-notes">
+              <div class="note-block"><b>看什么</b><p>蓝色柱子（单方向注入）：三个方向分别达到0.657/0.643/0.664的高余弦相似度。红色柱子（三方向并行注入）：全部降到0.434/0.390/0.382，且方向间的区分度几乎消失。</p></div>
+              <div class="note-block"><b>说明什么</b><p>即使范数问题被解决，非正交向量直接相加也会因为共享子空间分量的累积和独特分量的相对抑制而导致"所有方向同时变弱"。这正是正交化需要解决的问题。</p></div>
+              <div class="note-block"><b>不要误读</b><p>这不是"注入强度不够"——每个方向在并行条件下用的强度和单独时一样(α=0.5 each)。问题在于向量几何，不是力度。</p></div>
+              <span class="source">原图：Figure 4，第4页</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card full">
+          <div class="kicker">Table 3 · 核心实验</div>
+          <h3>GSM8K消融实验：98% vs 4%的戏剧性对比</h3>
+          <div class="paper-figure">
+            <div class="paper-shot">
+              <img src="../paper-assets/gems/table-3-gsm8k-ablation-crop.png?v=1" alt="Table 3: GSM8K component ablation" loading="lazy">
+            </div>
+            <div class="paper-notes">
+              <div class="note-block"><b>看什么</b><p>T2(GEMS Full)=98%，T1(纯基线)=92%，T6(ActAdd无约束)=4%，T8(Full layer hook)=4%。T3(去正交)=92%，T7(去包络)=96%，T4/T5(单方向)=92-96%。</p></div>
+              <div class="note-block"><b>说明什么</b><p>因果层次：范数保持+o_proj注入是前提（T6/T8崩溃）；正交化和包络不决定生死但影响质量。GEMS甚至超过基线6个百分点，暗示适度引导可能帮助模型聚焦。</p></div>
+              <div class="note-block"><b>不要误读</b><p>T3(去正交)=92%不等于"正交化没用"——GSM8K是二值准确率度量，看不出语义可区分性的丧失。定性输出（Appendix D.8）显示T3虽然语法正确但各专家语义混在一起无法区分。</p></div>
+              <span class="source">原表：Table 3，第8页</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card full">
+          <div class="kicker">Table 4 · PPL验证</div>
+          <h3>Wikitext-2语言质量：仅+2.2% PPL增长</h3>
+          <div class="paper-figure">
+            <div class="paper-shot">
+              <img src="../paper-assets/gems/table-4-ppl-results-crop.png?v=1" alt="Table 4: PPL evaluation" loading="lazy">
+            </div>
+            <div class="paper-notes">
+              <div class="note-block"><b>看什么</b><p>B(Full GEMS)=15.15(+2.2%)，C(去正交)=15.49(+4.5%)，E(去包络)=16.08(+8.5%)，A6(ActAdd)=25173(1700x)。Hook基础设施零开销(A0=A1=14.82)。</p></div>
+              <div class="note-block"><b>说明什么</b><p>连续指标PPL揭示了GSM8K准确率看不到的差异：正交化贡献-0.35 PPL，包络贡献更大的-0.93 PPL。ActAdd的灾难性在连续指标上更加触目惊心。</p></div>
+              <div class="note-block"><b>不要误读</b><p>PPL增幅小不代表引导效果弱——PPL衡量的是语言建模质量保持度，不是语义引导强度。这两个目标通过GEMS的几何约束得以兼顾。</p></div>
+              <span class="source">原表：Table 4，第9页</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card full">
+          <div class="kicker">Figure 5 · 探针证据</div>
+          <h3>上下文保真度：三区域分析揭示每个约束的表征级效果</h3>
+          <div class="paper-figure">
+            <div class="paper-shot">
+              <img src="../paper-assets/gems/figure-5-context-fidelity-crop.png?v=1" alt="Figure 5: Context fidelity" loading="lazy">
+            </div>
+            <div class="paper-notes">
+              <div class="note-block"><b>看什么</b><p>A区(L5-8)干预前三曲线重合完美保真。B区(L9-20)B(GEMS)最大偏离1.07%，C(去正交)2.48%（2.3倍于B），E(去包络)2.12%。C区(L21-25)E恢复最慢。</p></div>
+              <div class="note-block"><b>说明什么</b><p>正交化将干预窗口内的扰动减半（2.48%→1.07%），包络帮助后干预区更快恢复。这是正交化因果作用在表征级别的直接证据。</p></div>
+              <div class="note-block"><b>不要误读</b><p>1-2%的余弦偏离看起来很小，但这是与整个基线隐状态的余弦相似度。在高维空间中，1%的方向偏差可以对应token分布的巨大变化。关键是B/C/E之间的相对差异。</p></div>
+              <span class="source">原图：Figure 5，第10页</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="experiments">
+      <div class="section-head"><h2>7. 实验与证据</h2><p>四层递进验证，每个实验回答一个明确问题</p></div>
+      <div class="cards">
+        <article class="card wide">
+          <div class="kicker">Evidence · Qualitative</div>
+          <h3>定性输出：逐步叠加专家产生可预测变化</h3>
+          <p>PR危机memo场景：B0(无引导)→"unforeseen circumstances...financial constraints"；B1(+Empathy)→"lies with me as its creator...did not fully grasp"；B1_2(+Accountability)→"biggest mistake was failing to establish clear goals"；B1_2_3(+Minimalism)→"based on hard data and strategic necessity...failed to meet critical milestones"。每次叠加一个专家，输出词汇和论证结构明显向该方向偏移，且已有专家的特征保留。ActAdd产生重复胡言乱语。</p>
+          <span class="source">Table 1, 第6页</span>
+        </article>
+        <article class="card green">
+          <div class="kicker">Evidence · Causality</div>
+          <h3>信号留存+随机向量对照</h3>
+          <p>Δcos>0（100% prompts, dz>1.8）证明信号穿越FFN存活。专家向量词汇簇77%正向激活率 vs 随机向量48%，排除了几何操作本身导致输出变化的可能。</p>
+          <span class="source">§4.2 Table 2, 第7页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Evidence · Scaling</div>
+          <h3>跨模型迁移：3B-31B</h3>
+          <p>Llama-3.2-3B、Qwen3.6-27B、Gemma-4-31B上均观察到语义偏移，使用按深度比例映射的参数。Gemma-4-31B的PR危机输出展现出强同理心+担责+简洁的复合风格。</p>
+          <span class="source">§4.4, 第10-11页</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="pitfalls">
+      <div class="section-head"><h2>8. 难点、误区与失败模式</h2><p>容易踩的坑和方法边界</p></div>
+      <div class="cards">
+        <article class="card red">
+          <div class="kicker">Failure Mode 1</div>
+          <h3>误区：正交化是核心约束</h3>
+          <p>错。去正交化(T3)仍有92%准确率（等于基线）。正交化解决的是"语义可区分性"而非"会不会崩"。真正的生死线是范数保持+o_proj注入。</p>
+          <span class="source">Table 3 T3 vs T6/T8, 第8页</span>
+        </article>
+        <article class="card red">
+          <div class="kicker">Failure Mode 2</div>
+          <h3>误区：注入点不重要</h3>
+          <p>错。T8仅将注入点从o_proj改为full layer，其他约束全保留，准确率从98%→4%。MLP编码事实知识，污染它即摧毁推理能力。</p>
+          <span class="source">Table 3 T8, 第8页</span>
+        </article>
+        <article class="card red">
+          <div class="kicker">Failure Mode 3</div>
+          <h3>分布外向量导致崩溃</h3>
+          <p>即使满足所有几何约束，如果专家向量不在模型学到的表示空间内（如随机向量），仍可能崩溃。向量必须来自模型自身的对比激活差异。</p>
+          <span class="source">§3.1警告 + §5讨论, 第5,11页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Limitation 1</div>
+          <h3>仅验证3个方向</h3>
+          <p>所有实验最多3个同时注入的方向。方向数增加时（如10+），正交化是否仍然有效、范数预算如何分配，尚未验证。</p>
+          <span class="source">§5局限性, 第11页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Limitation 2</div>
+          <h3>不能创造新能力</h3>
+          <p>GEMS只是在模型已有能力空间内重新加权输出分布（词汇簇分析证实了这一点），不能赋予模型训练数据中没有的能力。</p>
+          <span class="source">§5讨论, 第11页</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="applications">
+      <div class="section-head"><h2>9. 落地价值</h2><p>GEMS的实用场景和工程意义</p></div>
+      <div class="cards">
+        <article class="card blue">
+          <div class="kicker">Application 1</div>
+          <h3>多属性AI助手对齐</h3>
+          <p>同时控制事实准确性、安全性、沟通风格（正式/同理心/简洁），无需多次推理或多模型串联。单个模型一次前向传播即可满足多维度输出要求。</p>
+          <span class="source">基于§4.1定性结果推断</span>
+        </article>
+        <article class="card green">
+          <div class="kicker">Application 2</div>
+          <h3>可控数据合成</h3>
+          <p>结构化生成具有特定语义属性组合的文本（如"专业+乐观+简洁"的客服回复、"严谨+易懂+鼓励式"的教育内容），用于训练数据增强。</p>
+          <span class="source">基于§1动机讨论推断</span>
+        </article>
+        <article class="card amber">
+          <div class="kicker">Application 3</div>
+          <h3>AI安全红队与对齐研究</h3>
+          <p>通过叠加多个"不安全方向"探测模型对齐鲁棒性边界；正交化方法也可用于理解表示空间中不同安全属性的几何关系。</p>
+          <span class="source">基于§2方向干扰分析推断</span>
+        </article>
+        <article class="card wide dark">
+          <div class="kicker">Engineering Impact</div>
+          <h3>工程启示：纯几何操作就够了</h3>
+          <p>GEMS证明LLM行为控制不一定需要RLHF、DPO或复杂的对齐训练。在已有模型上，简单的向量运算（正交化+范数约束+正确的注入位置）就能实现复杂的多维度行为控制。这对端侧部署、实时个性化、低成本定制化有重大意义。核心代码量估计不超过100行PyTorch。</p>
+          <span class="source">基于§3方法和§5讨论综合</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="final">
+      <h2>终极总结</h2>
+      <p>GEMS通过"范数保持+o_proj精确注入+实时Gram-Schmidt正交化+高斯包络层间调制"四个纯几何约束，首次证明了免训练的LLM多语义并行激活引导是可行的。它将三方向叠加在GSM8K上从4%崩溃恢复到98%准确率，Wikitext-2 PPL仅增2.2%，效果可跨3B-31B架构迁移。核心洞见是：崩溃不是激活引导的固有局限，而是无约束加法违反了表示空间几何的必然结果——只要尊重几何结构，一个模型可以同时被多个语义方向精确引导。</p>
+    </section>
+  </main>
+</body>
+</html>

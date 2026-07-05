@@ -1,7 +1,7 @@
 const papers = [
   {
     id: 'paper-4',
-    htmlFile: 'gems-multi-semantic-superposition.html',
+    htmlFile: 'GEMS-paper-cards.html',
     slug: 'gems-multi-semantic-superposition',
     title: 'GEMS: Geometric Constraints Enable Multi-Semantic Superposition in LLMs',
     authors: ['Yu Deng'],

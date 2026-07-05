@@ -27,7 +27,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Crop precise figure/table assets from a PDF.")
     parser.add_argument("--pdf", required=True, help="Path to source PDF.")
     parser.add_argument("--plan", required=True, help="Path to crop plan JSON.")
-    parser.add_argument("--out-dir", default="artifacts/paper-assets", help="Output asset directory.")
+    parser.add_argument("--out-dir", default="paper-assets", help="Output asset directory (e.g. paper-assets/cosmos3).")
     parser.add_argument("--scale", type=float, default=3.0, help="Render scale. 3.0 is usually enough for web.")
     return parser.parse_args()
 

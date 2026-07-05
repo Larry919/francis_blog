@@ -1,0 +1,53 @@
+{
+  "items": [
+    {
+      "name": "figure-1-architecture-crop",
+      "page": 2,
+      "box": [54, 350, 558, 505],
+      "kind": "figure",
+      "note": "Figure 1: GEMS architecture showing (a) Gaussian Envelope, (b) Sequential o_proj Interception, (c) Norm Preservation Constraint"
+    },
+    {
+      "name": "figure-2-norm-deviation-crop",
+      "page": 3,
+      "box": [54, 555, 288, 685],
+      "kind": "figure",
+      "note": "Figure 2: Per-layer residual stream norm under ActAdd vs baseline showing distributional deviation"
+    },
+    {
+      "name": "figure-3-prob-collapse-crop",
+      "page": 3,
+      "box": [312, 555, 558, 685],
+      "kind": "figure",
+      "note": "Figure 3: Token probability distribution collapse under ActAdd"
+    },
+    {
+      "name": "figure-4-directional-interference-crop",
+      "page": 4,
+      "box": [54, 260, 558, 458],
+      "kind": "figure",
+      "note": "Figure 4: Directional interference bar chart showing single vs parallel injection"
+    },
+    {
+      "name": "table-3-gsm8k-ablation-crop",
+      "page": 8,
+      "box": [108, 240, 504, 330],
+      "kind": "table",
+      "note": "Table 3: GSM8K evaluation and component ablation results"
+    },
+    {
+      "name": "table-4-ppl-results-crop",
+      "page": 9,
+      "box": [108, 125, 504, 295],
+      "kind": "table",
+      "note": "Table 4: PPL evaluation and ablation on Wikitext-2"
+    },
+    {
+      "name": "figure-5-context-fidelity-crop",
+      "page": 10,
+      "box": [54, 120, 558, 360],
+      "kind": "figure",
+      "note": "Figure 5: Context fidelity across layers showing three zones"
+    }
+  ]
+}
