@@ -1,5 +1,55 @@
 const papers = [
   {
+    id: 'paper-4',
+    htmlFile: 'gems-multi-semantic-superposition.html',
+    slug: 'gems-multi-semantic-superposition',
+    title: 'GEMS: Geometric Constraints Enable Multi-Semantic Superposition in LLMs',
+    authors: ['Yu Deng'],
+    venue: 'arXiv',
+    year: 2026,
+    tags: ['Activation Steering', 'LLM', 'Interpretability', 'Machine Learning'],
+    thumbnail: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=activation%20steering%20LLM%20semantic%20vector%20space%20geometric%20constraints%20orthogonalization%20neural%20network%20academic%20illustration&image_size=landscape_4_3',
+    abstract: 'Activation steering controls model behavior by modifying intermediate hidden states at inference time without retraining. Existing methods handle only single-direction injection; when multiple semantic directions are superposed without constraints, the model collapses. GEMS proposes geometric constraints: norm-preserving weighted superposition, targeted attention-pathway injection, and real-time orthogonalization to enable multi-semantic superposition.',
+    contributions: [
+      '首次系统性分解多语义激活引导崩溃的两个根本原因：分布偏移和方向干扰',
+      '提出 GEMS 框架，通过几何约束实现免训练的多语义叠加',
+      '在 GSM8K 上三方向同时注入保持 98% 准确率（无约束加法崩溃至 4%）',
+      '验证了正交化信号能穿过 FFN 通路并保持语义特异性，可迁移到 3B-31B 架构'
+    ],
+    keyFigures: [
+      {
+        id: 'fig1',
+        caption: 'Figure 1: 多语义叠加崩溃问题示意图',
+        imagePath: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=activation%20steering%20LLM%20semantic%20directions%20vector%20space%20collapse%20illustration%20geometric%20constraints%20orthogonalization&image_size=landscape_16_9',
+        cropArea: { x: 0, y: 0, width: 100, height: 100 },
+        explanation: '展示了单一语义方向注入有效，但多方向直接相加导致崩溃的两种机制：范数累积导致的分布偏移和非正交向量导致的方向干扰。'
+      },
+      {
+        id: 'fig2',
+        caption: 'Figure 2: GEMS 框架的几何约束机制',
+        imagePath: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=norm%20preserving%20weighted%20superposition%20orthogonalization%20attention%20pathway%20injection%20neural%20network%20layers%20diagram%20academic&image_size=landscape_16_9',
+        cropArea: { x: 0, y: 0, width: 100, height: 100 },
+        explanation: 'GEMS 三个核心几何约束：范数保持加权叠加、实时 Gram-Schmidt 正交化、目标注意力通路注入，协同解决多语义叠加崩溃问题。'
+      }
+    ],
+    methods: [
+      {
+        section: 'Distributional Deviation（分布偏移）',
+        content: '加性扰动在各层累积范数，将激活值推出训练分布之外。GEMS 通过范数保持的加权叠加策略，确保叠加后的激活向量范数与原始激活相当。'
+      },
+      {
+        section: 'Directional Interference（方向干扰）',
+        content: '非正交语义向量在叠加时相互投影抵消。GEMS 使用实时 Gram-Schmidt 正交化，确保所有注入方向相互正交，避免相互干扰。'
+      },
+      {
+        section: 'GEMS 几何约束方法',
+        content: '三个协同约束：实时正交化消除方向干扰、范数归一化防止分布偏移、目标注意力通路注入确保信号有效传播。在 GSM8K 上三方向注入从 4% 恢复到 98% 准确率。'
+      }
+    ],
+    pdfLink: 'https://arxiv.org/abs/2606.19946',
+    codeLink: 'https://github.com/LuLu663939/gems-multi-semantic-steering'
+  },
+  {
     id: 'paper-1',
     htmlFile: 'attention-is-all-you-need.html',
     slug: 'attention-is-all-you-need',

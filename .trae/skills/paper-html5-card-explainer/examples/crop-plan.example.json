@@ -1,0 +1,25 @@
+{
+  "items": [
+    {
+      "name": "figure-1-overview-crop",
+      "page": 2,
+      "box": [50, 42, 545, 292],
+      "kind": "figure",
+      "note": "Figure body only; caption is explained in HTML notes."
+    },
+    {
+      "name": "figure-2-pipeline-crop",
+      "page": 4,
+      "box": [42, 38, 552, 318],
+      "kind": "figure",
+      "note": "Pipeline figure body only."
+    },
+    {
+      "name": "table-1-main-results",
+      "page": 7,
+      "box": [58, 58, 538, 798],
+      "kind": "table",
+      "note": "Large table crop; keep complete table and required notes."
+    }
+  ]
+}
