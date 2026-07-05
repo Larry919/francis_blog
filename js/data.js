@@ -1,6 +1,8 @@
 const papers = [
   {
     id: 'paper-1',
+    htmlFile: 'attention-is-all-you-need.html',
+    slug: 'attention-is-all-you-need',
     title: 'Attention Is All You Need',
     authors: ['Ashish Vaswani', 'Noam Shazeer', 'Niki Parmar', 'Jakob Uszkoreit', 'et al.'],
     venue: 'NeurIPS',
@@ -49,6 +51,8 @@ const papers = [
   },
   {
     id: 'paper-2',
+    htmlFile: 'bert-pretraining.html',
+    slug: 'bert-pretraining',
     title: 'BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding',
     authors: ['Jacob Devlin', 'Ming-Wei Chang', 'Kenton Lee', 'Kristina Toutanova'],
     venue: 'NAACL',
@@ -86,6 +90,8 @@ const papers = [
   },
   {
     id: 'paper-3',
+    htmlFile: 'ddpm-denoising-diffusion.html',
+    slug: 'ddpm-denoising-diffusion',
     title: 'Denoising Diffusion Probabilistic Models',
     authors: ['Jonathan Ho', 'Ajay Jain', 'Pieter Abbeel'],
     venue: 'NeurIPS',
@@ -172,6 +178,6 @@ const siteConfig = {
   title: "Francis's Academic Blog",
   description: '探索 AI 前沿，深度解读论文，分享技术思考',
   avatar: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20portrait%20young%20researcher%20minimalist%20style%20dark%20blue%20background%20elegant&image_size=square',
-  github: 'https://github.com/larry919',
+  github: 'https://github.com/Larry919',
   email: 'francis@example.com'
 };

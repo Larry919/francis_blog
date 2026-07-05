@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>论文标题 - Francis's Academic Blog</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+  <div class="paper-detail-page">
+    <div class="container">
+      <div style="margin-bottom: 40px;">
+        <a href="../papers.html" style="color: var(--text-secondary); display: inline-flex; align-items: center; gap: 8px; margin-bottom: 24px;">
+          <i data-lucide="arrow-left"></i> 返回论文列表
+        </a>
+      </div>
+
+      <div class="paper-detail-header">
+        <span class="paper-detail-venue-badge">会议/期刊 年份</span>
+        <h1 class="paper-detail-title">论文完整标题</h1>
+        <p class="paper-detail-authors">作者1, 作者2, 作者3, et al.</p>
+        <div class="paper-card-tags">
+          <span class="tag">标签1</span>
+          <span class="tag">标签2</span>
+          <span class="tag">标签3</span>
+        </div>
+        <div class="paper-detail-links" style="margin-top: 24px;">
+          <a href="论文PDF链接" target="_blank" class="btn btn-primary">
+            <i data-lucide="file-text"></i> 查看论文
+          </a>
+          <a href="代码链接" target="_blank" class="btn btn-secondary">
+            <i data-lucide="github"></i> 代码
+          </a>
+        </div>
+      </div>
+
+      <div class="paper-detail-layout">
+        <div class="paper-toc">
+          <h4>目录导航</h4>
+          <ul class="toc-list">
+            <li><a href="#abstract">摘要</a></li>
+            <li><a href="#contributions">核心贡献</a></li>
+            <li><a href="#figure-1">图 1</a></li>
+            <li><a href="#method-1">方法章节名</a></li>
+          </ul>
+        </div>
+
+        <div id="paper-content">
+          <section id="abstract" class="paper-section">
+            <h2><span class="section-number">01</span> 摘要</h2>
+            <div class="abstract-box">
+              <p>论文摘要内容，用中文或英文概括论文核心内容...</p>
+            </div>
+          </section>
+
+          <section id="contributions" class="paper-section">
+            <h2><span class="section-number">02</span> 核心贡献</h2>
+            <ul class="contributions-list">
+              <li>
+                <span class="contribution-number">1</span>
+                <span>贡献点 1 的描述...</span>
+              </li>
+              <li>
+                <span class="contribution-number">2</span>
+                <span>贡献点 2 的描述...</span>
+              </li>
+            </ul>
+          </section>
+
+          <section class="paper-section">
+            <h2><span class="section-number">03</span> 关键图表解读</h2>
+
+            <div id="figure-1" class="figure-card">
+              <div class="figure-card-image">
+                <img src="图表图片URL或路径" alt="图表说明文字" loading="lazy">
+              </div>
+              <div class="figure-card-caption">Figure 1: 图表的原始标题</div>
+              <div class="figure-card-explanation">
+                <h4><i data-lucide="lightbulb"></i> 解读</h4>
+                <p>对这张图表的详细解读，说明它展示了什么、关键发现是什么...</p>
+              </div>
+            </div>
+
+          </section>
+
+          <section class="paper-section">
+            <h2><span class="section-number">04</span> 方法详解</h2>
+
+            <div id="method-1" class="method-card">
+              <h3>方法小节标题</h3>
+              <p>该方法的详细解读，说明核心思想、数学公式直观理解、实现要点等...</p>
+            </div>
+
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/components.js"></script>
+  <script>
+    document.title = '论文标题 - Francis\'s Academic Blog';
+    if (window.lucide) lucide.createIcons();
+  </script>
+</body>
+</html>

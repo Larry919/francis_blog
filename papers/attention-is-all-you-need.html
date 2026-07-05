@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attention Is All You Need - Francis's Academic Blog</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+  <div class="paper-detail-page">
+    <div class="container">
+      <div style="margin-bottom: 40px;">
+        <a href="../papers.html" style="color: var(--text-secondary); display: inline-flex; align-items: center; gap: 8px; margin-bottom: 24px;">
+          <i data-lucide="arrow-left"></i> 返回论文列表
+        </a>
+      </div>
+
+      <div class="paper-detail-header">
+        <span class="paper-detail-venue-badge">NeurIPS 2017</span>
+        <h1 class="paper-detail-title">Attention Is All You Need</h1>
+        <p class="paper-detail-authors">Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser, Illia Polosukhin</p>
+        <div class="paper-card-tags">
+          <span class="tag">Transformer</span>
+          <span class="tag">Attention</span>
+          <span class="tag">NLP</span>
+        </div>
+        <div class="paper-detail-links" style="margin-top: 24px;">
+          <a href="https://arxiv.org/abs/1706.03762" target="_blank" class="btn btn-primary">
+            <i data-lucide="file-text"></i> 查看论文
+          </a>
+          <a href="https://github.com/tensorflow/tensor2tensor" target="_blank" class="btn btn-secondary">
+            <i data-lucide="github"></i> 代码
+          </a>
+        </div>
+      </div>
+
+      <div class="paper-detail-layout">
+        <div class="paper-toc">
+          <h4>目录导航</h4>
+          <ul class="toc-list">
+            <li><a href="#abstract">摘要</a></li>
+            <li><a href="#contributions">核心贡献</a></li>
+            <li><a href="#figure-1">图 1</a></li>
+            <li><a href="#figure-2">图 2</a></li>
+            <li><a href="#method-1">Scaled Dot-Product Attention</a></li>
+            <li><a href="#method-2">Multi-Head Attention</a></li>
+            <li><a href="#method-3">Positional Encoding</a></li>
+          </ul>
+        </div>
+
+        <div id="paper-content">
+          <section id="abstract" class="paper-section">
+            <h2><span class="section-number">01</span> 摘要</h2>
+            <div class="abstract-box">
+              <p>The dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. The Transformer achieves state-of-the-art results on WMT 2014 English-to-German and English-to-French translation tasks while being significantly more parallelizable and requiring significantly less time to train.</p>
+            </div>
+          </section>
+
+          <section id="contributions" class="paper-section">
+            <h2><span class="section-number">02</span> 核心贡献</h2>
+            <ul class="contributions-list">
+              <li>
+                <span class="contribution-number">1</span>
+                <span>提出了完全基于自注意力机制的 Transformer 架构，彻底抛弃了循环和卷积结构</span>
+              </li>
+              <li>
+                <span class="contribution-number">2</span>
+                <span>在 WMT 2014 英德和英法翻译任务上取得了当时的 SOTA 结果</span>
+              </li>
+              <li>
+                <span class="contribution-number">3</span>
+                <span>相比 RNN 实现了更高程度的并行化，训练速度大幅提升</span>
+              </li>
+              <li>
+                <span class="contribution-number">4</span>
+                <span>引入了多头注意力（Multi-Head Attention）和位置编码（Positional Encoding）等关键概念，成为后续大语言模型的基石</span>
+              </li>
+            </ul>
+          </section>
+
+          <section class="paper-section">
+            <h2><span class="section-number">03</span> 关键图表解读</h2>
+
+            <div id="figure-1" class="figure-card">
+              <div class="figure-card-image">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=transformer%20model%20architecture%20encoder%20decoder%20multi-head%20attention%20diagram%20academic%20paper%20style&image_size=portrait_4_3" alt="The Transformer Architecture" loading="lazy">
+              </div>
+              <div class="figure-card-caption">Figure 1: The Transformer - Model Architecture</div>
+              <div class="figure-card-explanation">
+                <h4><i data-lucide="lightbulb"></i> 解读</h4>
+                <p>Transformer 由编码器（Encoder）和解码器（Decoder）两部分组成，各由 N=6 个相同的层堆叠而成。编码器每层包含两个子层：多头自注意力机制和位置前馈网络；解码器在这两个子层之间插入了第三个子层，用于对编码器输出执行多头注意力。每个子层都使用残差连接和层归一化。这种设计使得模型可以一次性看到整个输入序列，实现高度并行化计算。</p>
+              </div>
+            </div>
+
+            <div id="figure-2" class="figure-card">
+              <div class="figure-card-image">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=scaled%20dot%20product%20attention%20multi-head%20attention%20mechanism%20diagram%20vectors%20keys%20queries%20values&image_size=landscape_4_3" alt="Multi-Head Attention" loading="lazy">
+              </div>
+              <div class="figure-card-caption">Figure 2: Scaled Dot-Product Attention and Multi-Head Attention</div>
+              <div class="figure-card-explanation">
+                <h4><i data-lucide="lightbulb"></i> 解读</h4>
+                <p>左图展示了缩放点积注意力：输入 Query (Q)、Key (K)、Value (V)，计算 Q 和 K 的点积，除以 √d_k 进行缩放防止梯度消失，经过 softmax 后与 V 相乘得到加权和。右图展示了多头注意力：将 Q/K/V 分别线性投影 h 次到不同子空间，并行执行注意力计算，最后拼接结果再投影。这让模型能够同时关注不同位置的不同表示子空间信息。</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="paper-section">
+            <h2><span class="section-number">04</span> 方法详解</h2>
+
+            <div id="method-1" class="method-card">
+              <h3>Scaled Dot-Product Attention（缩放点积注意力）</h3>
+              <p>注意力函数将 Query 和一组 Key-Value 对映射为输出。输出是 Value 的加权和，权重由 Query 与对应 Key 的相似度决定。具体计算为 Attention(Q,K,V) = softmax(QK^T / √d_k)V。除以 √d_k 的缩放因子至关重要：当 d_k 较大时，点积结果量级变大，会将 softmax 推入梯度极小的区域，导致训练困难。</p>
+            </div>
+
+            <div id="method-2" class="method-card">
+              <h3>Multi-Head Attention（多头注意力）</h3>
+              <p>单一注意力机制可能只能关注某一种模式。多头注意力将模型分为 h=8 个"头"，每个头学习不同的线性投影矩阵 W^Q_i, W^K_i, W^V_i 将 Q/K/V 投影到 d_k=d_v=d_model/h=64 维，并行计算注意力后将结果拼接，再通过 W^O 投影回 d_model=512 维。不同头可以学习关注不同位置、不同类型的关系，例如语法依赖、语义相似、共指关系等。</p>
+            </div>
+
+            <div id="method-3" class="method-card">
+              <h3>Positional Encoding（位置编码）</h3>
+              <p>由于 Transformer 没有循环和卷积，本身无法感知序列顺序，必须显式注入位置信息。论文使用正弦/余弦位置编码：PE(pos,2i)=sin(pos/10000^(2i/d_model))，PE(pos,2i+1)=cos(pos/10000^(2i/d_model))。这种编码的优势在于：1) 可以泛化到比训练时更长的序列；2) 任意两个位置的相对位置关系可以通过线性变换表示；3) 无需学习额外参数。位置编码与词嵌入相加后输入模型。</p>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/components.js"></script>
+  <script>
+    if (window.lucide) lucide.createIcons();
+  </script>
+</body>
+</html>

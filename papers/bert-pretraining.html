@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding - Francis's Academic Blog</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+  <div class="paper-detail-page">
+    <div class="container">
+      <div style="margin-bottom: 40px;">
+        <a href="../papers.html" style="color: var(--text-secondary); display: inline-flex; align-items: center; gap: 8px; margin-bottom: 24px;">
+          <i data-lucide="arrow-left"></i> 返回论文列表
+        </a>
+      </div>
+
+      <div class="paper-detail-header">
+        <span class="paper-detail-venue-badge">NAACL 2019</span>
+        <h1 class="paper-detail-title">BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding</h1>
+        <p class="paper-detail-authors">Jacob Devlin, Ming-Wei Chang, Kenton Lee, Kristina Toutanova</p>
+        <div class="paper-card-tags">
+          <span class="tag">BERT</span>
+          <span class="tag">Pre-training</span>
+          <span class="tag">NLP</span>
+          <span class="tag">Transformer</span>
+        </div>
+        <div class="paper-detail-links" style="margin-top: 24px;">
+          <a href="https://arxiv.org/abs/1810.04805" target="_blank" class="btn btn-primary">
+            <i data-lucide="file-text"></i> 查看论文
+          </a>
+          <a href="https://github.com/google-research/bert" target="_blank" class="btn btn-secondary">
+            <i data-lucide="github"></i> 代码
+          </a>
+        </div>
+      </div>
+
+      <div class="paper-detail-layout">
+        <div class="paper-toc">
+          <h4>目录导航</h4>
+          <ul class="toc-list">
+            <li><a href="#abstract">摘要</a></li>
+            <li><a href="#contributions">核心贡献</a></li>
+            <li><a href="#figure-1">图 1</a></li>
+            <li><a href="#method-1">Masked Language Model (MLM)</a></li>
+            <li><a href="#method-2">Next Sentence Prediction (NSP)</a></li>
+          </ul>
+        </div>
+
+        <div id="paper-content">
+          <section id="abstract" class="paper-section">
+            <h2><span class="section-number">01</span> 摘要</h2>
+            <div class="abstract-box">
+              <p>介绍BERT（Bidirectional Encoder Representations from Transformers），通过在所有层联合调节左右上下文，从无标注文本中预训练深度双向表示。预训练模型可以通过一个额外输出层进行微调，为广泛的NLP任务创建SOTA模型。</p>
+            </div>
+          </section>
+
+          <section id="contributions" class="paper-section">
+            <h2><span class="section-number">02</span> 核心贡献</h2>
+            <ul class="contributions-list">
+              <li>
+                <span class="contribution-number">1</span>
+                <span>引入了语言表示的双向预训练，使用MLM实现真正的双向上下文建模</span>
+              </li>
+              <li>
+                <span class="contribution-number">2</span>
+                <span>提出了掩码语言模型（MLM）和下一句预测（NSP）两个预训练任务</span>
+              </li>
+              <li>
+                <span class="contribution-number">3</span>
+                <span>在11项NLP任务上取得SOTA，包括GLUE、SQuAD、MNLI等</span>
+              </li>
+              <li>
+                <span class="contribution-number">4</span>
+                <span>证明预训练表示仅需简单微调即可适配多种下游任务，无需大量任务特定修改</span>
+              </li>
+            </ul>
+          </section>
+
+          <section class="paper-section">
+            <h2><span class="section-number">03</span> 关键图表解读</h2>
+
+            <div id="figure-1" class="figure-card">
+              <div class="figure-card-image">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=BERT%20pre-training%20fine-tuning%20architecture%20diagram%20masked%20LM%20next%20sentence%20prediction%20transformer%20layers&image_size=landscape_16_9" alt="BERT Pre-training and Fine-tuning Architecture" loading="lazy">
+              </div>
+              <div class="figure-card-caption">Figure 1: BERT Pre-training and Fine-tuning Architecture</div>
+              <div class="figure-card-explanation">
+                <h4><i data-lucide="lightbulb"></i> 解读</h4>
+                <p>BERT使用多层Transformer编码器。预训练阶段，模型通过两个无监督任务（掩码语言模型和下一句预测）在无标注数据上训练。微调阶段，使用下游任务的标注数据对所有参数进行微调，仅需添加简单的任务特定输出层即可。</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="paper-section">
+            <h2><span class="section-number">04</span> 方法详解</h2>
+
+            <div id="method-1" class="method-card">
+              <h3>Masked Language Model (MLM)</h3>
+              <p>随机掩码输入token的一定比例（15%），然后预测这些被掩码的token。这种方式让表示能够融合左右上下文，实现真正的深度双向Transformer预训练。被选中的token中80%替换为[MASK]，10%替换为随机token，10%保持不变，以缓解预训练和微调之间的不匹配。</p>
+            </div>
+
+            <div id="method-2" class="method-card">
+              <h3>Next Sentence Prediction (NSP)</h3>
+              <p>为了训练理解句子间关系的模型，使用二值化的下一句预测任务。选择句子A和B时，50%概率B是A的下一句，50%概率B是语料库中的随机句子。这让模型能够理解句子级别的关系，对问答和自然语言推理等任务很重要。</p>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/components.js"></script>
+  <script>
+    if (window.lucide) lucide.createIcons();
+  </script>
+</body>
+</html>

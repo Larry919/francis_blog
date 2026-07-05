@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Denoising Diffusion Probabilistic Models - Francis's Academic Blog</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+  <div class="paper-detail-page">
+    <div class="container">
+      <div style="margin-bottom: 40px;">
+        <a href="../papers.html" style="color: var(--text-secondary); display: inline-flex; align-items: center; gap: 8px; margin-bottom: 24px;">
+          <i data-lucide="arrow-left"></i> 返回论文列表
+        </a>
+      </div>
+
+      <div class="paper-detail-header">
+        <span class="paper-detail-venue-badge">NeurIPS 2020</span>
+        <h1 class="paper-detail-title">Denoising Diffusion Probabilistic Models</h1>
+        <p class="paper-detail-authors">Jonathan Ho, Ajay Jain, Pieter Abbeel</p>
+        <div class="paper-card-tags">
+          <span class="tag">Diffusion</span>
+          <span class="tag">Generative Models</span>
+          <span class="tag">Image Synthesis</span>
+        </div>
+        <div class="paper-detail-links" style="margin-top: 24px;">
+          <a href="https://arxiv.org/abs/2006.11239" target="_blank" class="btn btn-primary">
+            <i data-lucide="file-text"></i> 查看论文
+          </a>
+          <a href="https://github.com/hojonathanho/diffusion" target="_blank" class="btn btn-secondary">
+            <i data-lucide="github"></i> 代码
+          </a>
+        </div>
+      </div>
+
+      <div class="paper-detail-layout">
+        <div class="paper-toc">
+          <h4>目录导航</h4>
+          <ul class="toc-list">
+            <li><a href="#abstract">摘要</a></li>
+            <li><a href="#contributions">核心贡献</a></li>
+            <li><a href="#figure-1">图 1</a></li>
+            <li><a href="#figure-2">图 2</a></li>
+            <li><a href="#method-1">Forward Diffusion Process</a></li>
+            <li><a href="#method-2">Reverse Diffusion Process</a></li>
+            <li><a href="#method-3">Simplified Training Objective</a></li>
+          </ul>
+        </div>
+
+        <div id="paper-content">
+          <section id="abstract" class="paper-section">
+            <h2><span class="section-number">01</span> 摘要</h2>
+            <div class="abstract-box">
+              <p>提出使用去噪扩散概率模型生成高质量图像，这是一类受非平衡热力学启发的潜变量模型。通过建立扩散模型与去噪分数匹配、Langevin动力学之间的新联系，设计了一个加权变分下界训练目标，实现了SOTA图像合成质量。</p>
+            </div>
+          </section>
+
+          <section id="contributions" class="paper-section">
+            <h2><span class="section-number">02</span> 核心贡献</h2>
+            <ul class="contributions-list">
+              <li>
+                <span class="contribution-number">1</span>
+                <span>提出了简化的扩散模型训练目标，实现SOTA图像质量</span>
+              </li>
+              <li>
+                <span class="contribution-number">2</span>
+                <span>建立了扩散模型与去噪分数匹配（denoising score matching）及Langevin动力学之间的联系</span>
+              </li>
+              <li>
+                <span class="contribution-number">3</span>
+                <span>在CIFAR10和LSUN数据集上展示了高保真图像合成效果</span>
+              </li>
+              <li>
+                <span class="contribution-number">4</span>
+                <span>引入的DDPM框架成为现代生成式AI的基础之一</span>
+              </li>
+            </ul>
+          </section>
+
+          <section class="paper-section">
+            <h2><span class="section-number">03</span> 关键图表解读</h2>
+
+            <div id="figure-1" class="figure-card">
+              <div class="figure-card-image">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=diffusion%20forward%20process%20reverse%20process%20markov%20chain%20noise%20schedule%20denoising%20steps%20diagram&image_size=landscape_16_9" alt="The directed graphical model considered in this work" loading="lazy">
+              </div>
+              <div class="figure-card-caption">Figure 1: The directed graphical model considered in this work</div>
+              <div class="figure-card-explanation">
+                <h4><i data-lucide="lightbulb"></i> 解读</h4>
+                <p>前向过程（forward process）在T步中逐渐向数据添加高斯噪声，这是一个固定的马尔可夫链。反向过程（reverse process）从纯噪声x_T ~ N(0,I)开始，学习使用神经网络预测每一步的噪声，逐步去噪生成新数据样本。</p>
+              </div>
+            </div>
+
+            <div id="figure-2" class="figure-card">
+              <div class="figure-card-image">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=CIFAR10%20generated%20images%20diffusion%20model%20samples%20high%20quality%20synthetic%20images%20grid&image_size=square_hd" alt="Generated samples on CIFAR-10" loading="lazy">
+              </div>
+              <div class="figure-card-caption">Figure 2: Generated samples on CIFAR-10</div>
+              <div class="figure-card-explanation">
+                <h4><i data-lucide="lightbulb"></i> 解读</h4>
+                <p>DDPM生成的样本展示了高质量和多样性，FID分数与基于GAN的模型相当，同时提供了更稳定的训练动态。与GAN不同，扩散模型的训练过程不需要对抗训练，避免了模式崩塌和训练不稳定的问题。</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="paper-section">
+            <h2><span class="section-number">04</span> 方法详解</h2>
+
+            <div id="method-1" class="method-card">
+              <h3>Forward Diffusion Process（前向扩散过程）</h3>
+              <p>前向过程是一个固定的马尔可夫链，根据方差调度β₁,...,β_T逐步向数据添加高斯噪声。给定从真实数据分布采样的数据点x₀，通过每步添加噪声产生潜变量x₁,...,x_T。噪声调度采用线性策略，从β₁=10⁻⁴到β_T=0.02。</p>
+            </div>
+
+            <div id="method-2" class="method-card">
+              <h3>Reverse Diffusion Process（反向扩散过程）</h3>
+              <p>反向过程定义为从p(x_T)=N(x_T;0,I)开始的马尔可夫链，具有可学习的高斯转移概率。我们训练一个神经网络来预测这些反向转移的均值和方差（固定方差时只需预测均值/噪声），通过迭代去噪采样新数据。</p>
+            </div>
+
+            <div id="method-3" class="method-card">
+              <h3>Simplified Training Objective（简化训练目标）</h3>
+              <p>论文提出了一个简化目标，直接预测噪声分量ε而不是原始数据。通过简单的重参数化，将训练目标从原始的变分下界简化为简单的MSE损失：L_simple = E[||ε - ε_θ(x_t, t)||²]。这一简化带来了显著更好的样本质量和更稳定的训练。</p>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/components.js"></script>
+  <script>
+    if (window.lucide) lucide.createIcons();
+  </script>
+</body>
+</html>
