@@ -2,9 +2,9 @@ document.addEventListener('DOMContentLoaded', function() {
   initNavbarScroll();
   initActiveNav();
   initMobileMenu();
-  initScrollAnimations();
   renderPaperCards();
   renderBlogCards();
+  initBlogScrollAnimations();
 });
 
 function initNavbarScroll() {
@@ -50,13 +50,46 @@ function initScrollAnimations() {
   });
 }
 
+function initBlogScrollAnimations() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.blog-card').forEach((card, index) => {
+    card.style.transitionDelay = `${index * 0.1}s`;
+    observer.observe(card);
+  });
+}
+
 function renderPaperCards() {
   const grid = document.getElementById('papers-grid');
   if (!grid || typeof papers === 'undefined') return;
-  const papersToShow = grid.dataset.limit ? papers.slice(0, parseInt(grid.dataset.limit)) : papers;
   const inSubdir = window.location.pathname.includes('/papers/');
   const prefix = inSubdir ? '../papers/' : 'papers/';
+  const manifestUrl = inSubdir ? '../papers-manifest.json' : 'papers-manifest.json';
 
+  const allPapers = [...papers];
+  const limit = grid.dataset.limit ? parseInt(grid.dataset.limit) : null;
+
+  fetch(manifestUrl)
+    .then(res => res.ok ? res.json() : [])
+    .then(manifestPapers => {
+      const existingIds = new Set(allPapers.map(p => p.id));
+      manifestPapers.forEach(p => {
+        if (!existingIds.has(p.id)) allPapers.push(p);
+      });
+      const papersToShow = limit ? allPapers.slice(0, limit) : allPapers;
+      renderPaperGrid(grid, papersToShow, prefix);
+    })
+    .catch(() => {
+      const papersToShow = limit ? allPapers.slice(0, limit) : allPapers;
+      renderPaperGrid(grid, papersToShow, prefix);
+    });
+}
+
+function renderPaperGrid(grid, papersToShow, prefix) {
   grid.innerHTML = papersToShow.map(paper => `
     <article class="paper-card" onclick="window.location.href='${prefix}${paper.htmlFile}'">
       <div class="paper-card-image">
@@ -72,6 +105,7 @@ function renderPaperCards() {
       </div>
     </article>
   `).join('');
+  initScrollAnimations();
 }
 
 function renderBlogCards() {

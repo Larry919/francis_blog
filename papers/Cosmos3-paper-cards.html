@@ -1,0 +1,770 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cosmos 3 论文卡片精读</title>
+  <style>
+    :root {
+      --paper: #f8f0df;
+      --ink: #17130d;
+      --muted: #756b5b;
+      --line: rgba(23, 19, 13, .15);
+      --blue: #1f55e5;
+      --green: #2f7d56;
+      --red: #c94b3c;
+      --amber: #f1b13f;
+      --shadow: 0 28px 80px rgba(41, 29, 8, .12);
+      --radius: 28px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 4%, rgba(241, 177, 63, .30), transparent 28rem),
+        radial-gradient(circle at 92% 12%, rgba(31, 85, 229, .20), transparent 30rem),
+        linear-gradient(135deg, #fbf5e8 0%, #eee2cd 100%);
+      font-family: "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(23, 19, 13, .035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(23, 19, 13, .025) 1px, transparent 1px);
+      background-size: 32px 32px;
+      z-index: -1;
+    }
+    a { color: inherit; text-decoration: none; }
+    .page { width: min(1220px, calc(100% - 36px)); margin: 0 auto; }
+
+    .hero {
+      min-height: 88vh;
+      display: grid;
+      grid-template-columns: 1.16fr .84fr;
+      gap: 28px;
+      align-items: end;
+      padding: 56px 0 42px;
+    }
+    .hero-main, .stat-card, .card {
+      border: 1px solid var(--line);
+      background: rgba(255, 250, 240, .74);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+    .hero-main { padding: clamp(28px, 5vw, 56px); border-radius: 42px; }
+    .eyebrow {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 18px 0;
+      max-width: 900px;
+      font-size: clamp(44px, 8vw, 96px);
+      line-height: .88;
+      letter-spacing: -.075em;
+    }
+    .hero-subtitle {
+      max-width: 760px;
+      color: #453d31;
+      font-size: clamp(17px, 2vw, 22px);
+      line-height: 1.75;
+      margin: 0;
+    }
+    .hero-side { display: grid; gap: 18px; }
+    .stat-card { padding: 24px; border-radius: 30px; }
+    .stat-card b {
+      display: block;
+      color: var(--blue);
+      font-size: 46px;
+      line-height: 1;
+      letter-spacing: -.05em;
+    }
+    .stat-card span { display: block; margin-top: 8px; color: var(--muted); line-height: 1.55; }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      margin-bottom: 26px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 250, 240, .82);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 14px 40px rgba(41, 29, 8, .08);
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+    }
+    .nav a {
+      flex: 0 0 auto;
+      padding: 10px 14px;
+      border-radius: 999px;
+      color: #4f4639;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .nav a:hover { background: var(--blue); color: white; }
+
+    section { margin: 44px 0; scroll-margin-top: 96px; }
+    .section-head {
+      display: flex;
+      gap: 18px;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(30px, 4.4vw, 56px);
+      line-height: .95;
+      letter-spacing: -.055em;
+    }
+    .section-head p { max-width: 540px; color: var(--muted); line-height: 1.7; margin: 0; }
+
+    .cards { display: grid; grid-template-columns: repeat(12, 1fr); gap: 18px; }
+    .card {
+      grid-column: span 4;
+      min-height: 240px;
+      padding: 24px;
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .card.wide { grid-column: span 8; }
+    .card.full { grid-column: 1 / -1; }
+    .card.blue { background: linear-gradient(135deg, #143fc1, #1f55e5); color: white; }
+    .card.dark { background: #16130e; color: #fff6e7; }
+    .card.green { background: linear-gradient(135deg, #266749, #359066); color: white; }
+    .card.red { background: linear-gradient(135deg, #b23b31, #d95a45); color: white; }
+    .card.amber { background: linear-gradient(135deg, #f1b13f, #f7d58a); }
+    .card.blue p, .card.dark p, .card.green p, .card.red p,
+    .card.blue li, .card.dark li, .card.green li, .card.red li,
+    .card.blue .source, .card.dark .source, .card.green .source, .card.red .source {
+      color: rgba(255, 255, 255, .82);
+    }
+
+    .kicker {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .blue .kicker, .dark .kicker, .green .kicker, .red .kicker { color: rgba(255,255,255,.70); }
+    h3 { margin: 0 0 12px; font-size: 25px; line-height: 1.08; letter-spacing: -.035em; }
+    p, li { color: #50483a; line-height: 1.72; font-size: 15.5px; }
+    .source {
+      display: inline-flex;
+      margin-top: 14px;
+      padding: 6px 10px;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      opacity: .82;
+    }
+    .formula {
+      padding: 18px;
+      border-radius: 22px;
+      background: #17130d;
+      color: #fff4df;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      overflow-x: auto;
+      line-height: 1.8;
+      margin: 16px 0;
+    }
+
+    .paper-figure {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(280px, .92fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+    .paper-shot {
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #fff;
+      max-height: 760px;
+    }
+    .paper-shot img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #fff;
+    }
+    .paper-notes { display: grid; gap: 12px; align-content: start; }
+    .note-block {
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      padding: 15px;
+      background: rgba(255,255,255,.50);
+    }
+    .note-block b { display: block; margin-bottom: 6px; color: var(--blue); }
+    .note-block p { margin: 0; font-size: 14px; line-height: 1.65; }
+
+    .final {
+      margin: 64px 0 72px;
+      padding: clamp(28px, 5vw, 56px);
+      border-radius: 42px;
+      background: #17130d;
+      color: #fff5e4;
+      box-shadow: var(--shadow);
+    }
+    .final h2 {
+      margin: 0 0 18px;
+      font-size: clamp(34px, 5vw, 68px);
+      line-height: .95;
+      letter-spacing: -.055em;
+    }
+    .final p { color: rgba(255,255,255,.82); font-size: 21px; line-height: 1.75; margin: 0; }
+
+    @media (max-width: 980px) {
+      .hero, .paper-figure { grid-template-columns: 1fr; }
+      .card, .card.wide { grid-column: 1 / -1; }
+      .section-head { display: block; }
+      .section-head p { margin-top: 10px; }
+    }
+    @media (max-width: 640px) {
+      .page { width: min(100% - 22px, 1220px); }
+      .hero { padding-top: 24px; }
+      .hero-main, .final { border-radius: 30px; }
+      .nav { border-radius: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div class="hero-main">
+        <div class="eyebrow">NVIDIA · 2026年6月 · 物理AI世界模型</div>
+        <h1>Cosmos 3:<br>Omnimodal World Models for Physical AI</h1>
+        <p class="hero-subtitle">NVIDIA推出的全模态世界模型家族，首次在单一Mixture-of-Transformers架构内统一语言、图像、视频、音频、动作五大模态的理解与生成，终结物理AI领域模型碎片化范式，开源版本在文生图、图生视频、机器人策略多个基准达到开源SOTA。</p>
+      </div>
+      <aside class="hero-side">
+        <div class="stat-card"><b>5</b><span>统一模态：语言、图像、视频、音频、动作</span></div>
+        <div class="stat-card"><b>3</b><span>模型尺寸：Edge(4B)、Nano(16B)、Super(64B)</span></div>
+        <div class="stat-card"><b>#1</b><span>Artificial Analysis开源T2I/I2V第一，RoboArena策略模型第一</span></div>
+      </aside>
+    </header>
+
+    <nav class="nav" aria-label="页面目录">
+      <a href="#position">定位</a>
+      <a href="#logic">框架</a>
+      <a href="#claims">结论</a>
+      <a href="#method">方法</a>
+      <a href="#flows">流程</a>
+      <a href="#original-figures">原图原表</a>
+      <a href="#experiments">实验</a>
+      <a href="#pitfalls">难点</a>
+      <a href="#applications">落地</a>
+    </nav>
+
+    <section id="position">
+      <div class="section-head"><h2>1. 论文定位</h2><p>面向物理AI的全模态统一世界模型，终结碎片化模型拼接范式</p></div>
+      <div class="cards">
+        <article class="card blue">
+          <div class="kicker">领域</div>
+          <h3>物理AI (Physical AI)</h3>
+          <p>目标是构建能感知、推理、行动、与真实世界交互的通用具身agent，核心需要理解（感知推理）和生成（模拟预测动作）两大耦合能力。</p>
+          <span class="source">第1节，第5页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">传统范式问题</div>
+          <h3>模型碎片化</h3>
+          <p>过去需要拼接多个独立模型：VLM做理解、视频生成模型做模拟、VLA/WAM做动作预测，架构割裂、计算浪费、协同困难。</p>
+          <span class="source">第1节，第5页</span>
+        </article>
+        <article class="card green">
+          <div class="kicker">Cosmos 3方案</div>
+          <h3>单一架构统一</h3>
+          <p>同一个MoT架构，通过灵活的输入输出配置，无缝切换VLM、T2I/T2V/I2V、音视频生成、前向/逆向动力学、机器人策略，无需架构修改。</p>
+          <span class="source">Figure 1，第5页</span>
+        </article>
+        <article class="card wide amber">
+          <div class="kicker">开源</div>
+          <h3>完全开源开放</h3>
+          <p>代码、模型权重（Nano/Super及后训练变体）、五大合成数据集（PhyxSim/RobotSim/DriveSim/SynHuman/Warehouse）、Cosmos-HUE评测基准全部在Linux Foundation OpenMDW-1.1许可下开源，地址：github.com/nvidia/cosmos。</p>
+          <span class="source">摘要，第1页</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="logic">
+      <div class="section-head"><h2>2. 全文框架</h2><p>经典工业界大模型技术报告结构：问题→架构→数据→训练→基础设施→实验→结论</p></div>
+      <div class="cards">
+        <article class="card">
+          <div class="kicker">§1</div>
+          <h3>问题提出</h3>
+          <p>物理AI需要理解与生成协同，分离范式存在根本局限，需要统一框架。</p>
+        </article>
+        <article class="card">
+          <div class="kicker">§2</div>
+          <h3>模型架构</h3>
+          <p>模态编码器→token排列→MoT双塔骨干→多模态位置编码→模型变体。</p>
+        </article>
+        <article class="card">
+          <div class="kicker">§3-4</div>
+          <h3>数据与训练</h3>
+          <p>Reasoner理解通路和Generator生成通路分别设计分阶段课程数据与训练 recipe。</p>
+        </article>
+        <article class="card">
+          <div class="kicker">§5</div>
+          <h3>基础设施</h3>
+          <p>数据处理、分布式训练、推理服务、评测全栈工程优化，支撑大模型训练部署。</p>
+        </article>
+        <article class="card">
+          <div class="kicker">§6</div>
+          <h3>实验结果</h3>
+          <p>覆盖理解、图像、视频、音频、迁移、动作六大类任务，全面SOTA验证。</p>
+        </article>
+        <article class="card">
+          <div class="kicker">§7-8</div>
+          <h3>相关工作与结论</h3>
+          <p>定位贡献，展望作为物理AI闭环训练环境的未来。</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="claims">
+      <div class="section-head"><h2>3. 核心结论</h2><p>七大核心主张，覆盖架构有效性、SOTA表现、设计原则、规模覆盖等维度</p></div>
+      <div class="cards">
+        <article class="card blue">
+          <div class="kicker">Conclusion 1</div>
+          <h3>统一架构可行</h3>
+          <p>单一MoT架构可以同时胜任VLM理解、所有模态生成、动力学预测、机器人策略，无需任务专属架构修改。</p>
+          <span class="source">第1节，Figure 1，第5页</span>
+        </article>
+        <article class="card green">
+          <div class="kicker">Conclusion 2</div>
+          <h3>SOTA全面领先</h3>
+          <p>在多模态理解、文生图、图生视频、机器人策略等基准超越开源专用模型，第三方竞技场排名第一。</p>
+          <span class="source">摘要，Table1，Figure26，第1/6/69页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Conclusion 3</div>
+          <h3>理解生成协同</h3>
+          <p>AR/双流联合注意力既保留VLM推理能力，又让生成充分利用文本上下文，且AR永远不被DM更新保持因果性。</p>
+          <span class="source">§2.3.2，Figure5，第11-12页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Conclusion 4</div>
+          <h3>动作是一等模态</h3>
+          <p>通过共享几何组件的统一动作表示，可以跨自动驾驶、相机、机器人、第一人称运动多领域学习动作先验。</p>
+          <span class="source">§2.1.3，Figure3，第7-8页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Conclusion 5</div>
+          <h3>多模态位置编码关键</h3>
+          <p>带绝对时间调制的3D MRoPE解决了多帧率对齐问题，时间间隙解决初始帧伪影。</p>
+          <span class="source">§2.4，Figure6，第12-13页</span>
+        </article>
+        <article class="card amber">
+          <div class="kicker">Conclusion 6</div>
+          <h3>三阶段价值闭环</h3>
+          <p>Cosmos3短期可以生成合成数据、作为任务 specialization 起点，未来可作为闭环训练环境生成器。</p>
+          <span class="source">第1节，Figure2，第6页</span>
+        </article>
+        <article class="card dark">
+          <div class="kicker">Conclusion 7</div>
+          <h3>全规模覆盖</h3>
+          <p>Edge(4B)/Nano(16B)/Super(64B)三个尺寸，从端侧部署到数据中心推理全场景覆盖，都是稠密模型。</p>
+          <span class="source">§2.5，Table2，第14页</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="method">
+      <div class="section-head"><h2>4. 方法精讲</h2><p>十大核心技术要点，从架构、位置编码到训练策略全覆盖</p></div>
+      <div class="cards">
+        <article class="card wide dark">
+          <div class="kicker">核心架构创新</div>
+          <h3>Mixture-of-Transformers (MoT) 双塔结构</h3>
+          <p>每个Transformer层有两套独立参数（LayerNorm/Attention投影/MLP）：一套处理AR自回归子序列（语言+ViT视觉，因果掩码，做理解推理），一套处理DM扩散子序列（VAE视觉+音频+动作，双向掩码，做生成）；两套参数都从预训练Qwen3-VLM初始化，保证继承强推理能力。</p>
+          <span class="source">§2.3，Figure5，第11页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">注意力机制</div>
+          <h3>双流联合注意力</h3>
+          <p>AR token只做因果自注意力（不看DM），DM token做全注意力（同时看AR+DM token）；既保证生成被prompt充分条件化，又不破坏AR语言生成因果性。</p>
+          <span class="source">§2.3.2，公式7-8，第12页</span>
+        </article>
+        <article class="card wide">
+          <div class="kicker">动作统一</div>
+          <h3>共享几何组件动作表示</h3>
+          <p>异构具身动作分解为三组件：自位姿（3D位置+6D旋转=9D）、执行器位姿（9D）、抓取状态（1D/15D）；通过领域专属输入输出投影映射到统一隐空间，骨干参数共享，避开底层控制接口差异。</p>
+          <span class="source">§2.1.3，公式1-2，Figure3，第8-9页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Token格式</div>
+          <h3>统一Token排列</h3>
+          <p>所有任务遵循固定格式：[AR子序列（语言+ViT视觉，&lt;EOS&gt;+&lt;BOG&gt;结尾）, DM子序列（clean条件→noisy目标，顺序视觉→音频→动作）]，原生支持8种生成模式。</p>
+          <span class="source">§2.2，Figure4，第9-10页</span>
+        </article>
+        <article class="card wide">
+          <div class="kicker">位置编码</div>
+          <h3>带绝对时间调制的3D MRoPE</h3>
+          <p>语言token t=h=w退化为1D RoPE；视频token t/h/w三维；音频/动作只有t维度；定义TPS（每秒时间步），以24FPS/4倍压缩=6为TPS_base，通过δt=TPS_base/TPS缩放对齐不同采样率到真实物理时间；AR与DM之间插入15000时间间隙避免首帧伪影。</p>
+          <span class="source">§2.4，公式9，Figure6，第12-14页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">训练课程</div>
+          <h3>分阶段训练</h3>
+          <p>Reasoner: 22M预训练（OCR42.9%，judge阈值2）→2.2M SFT（50%视频文本，judge阈值5）；Generator: 预训练→中期训练（加入动作/迁移）→各任务后训练。</p>
+          <span class="source">§3-4，Figure7-8，第15/20页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">数据策略</div>
+          <h3>语义去重+AI Judge过滤</h3>
+          <p>语义去重去掉4.23%近重复；用Gemma-4-31B-it做AI judge从忠实性、完整性、正确性三个维度打分，分阶段选择阈值平衡覆盖和精度。</p>
+          <span class="source">§3.1.1，第16-17页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">推理技巧</div>
+          <h3>Reasoner作为Prompt Upsampler</h3>
+          <p>推理时先用Reasoner将用户稀疏prompt上采样为包含场景、时间线、音频、镜头语言的结构化JSON，再送入Generator，显著提升物理合理性。</p>
+          <span class="source">§6.3.2，Appendix B，第74页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">数据引擎</div>
+          <h3>五大合成数据集</h3>
+          <p>构建SDG-PhyxSim（物理交互）、SDG-RobotSim（机器人）、SDG-DriveSim（驾驶）、SDG-SynHuman（数字人）、SDG-Warehouse（仓储）合成数据集，消融证明显著提升领域效果。</p>
+          <span class="source">Appendix C，第97-105页</span>
+        </article>
+        <article class="card green">
+          <div class="kicker">跨域迁移</div>
+          <h3>动作领域正迁移</h3>
+          <p>不同动作领域（相机运动、机器人操作、第一人称）之间存在正向迁移，第一人称运动数据可加速机器人操作适配。</p>
+          <span class="source">Figure28-29，第72-73页</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="flows">
+      <div class="section-head"><h2>5. 训练与部署流程</h2><p>从预训练到下游部署的完整流程，配套全栈基础设施</p></div>
+      <div class="cards">
+        <article class="card wide blue">
+          <div class="kicker">训练流程</div>
+          <h3>三阶段训练</h3>
+          <p><b>预训练</b>：Reasoner在图文/文本数据上预训练，Generator在图像/视频/音频数据上预训练；<b>中期训练(Mid-Training)</b>：Generator加入动作和视频迁移模态，得到通用MT-init基础模型；<b>后训练(Post-Training)</b>：在目标任务数据（T2I/I2V/机器人策略）上轻量微调，无需修改架构。</p>
+          <span class="source">§4，Figure2，第6/25-31页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">基础设施</div>
+          <h3>全栈工程优化</h3>
+          <p>数据侧Joint DataLoader跨流同步选择；训练侧Two-way flat attention、选择性激活检查点、AOT编译分词器、异步检查点（降4-9%训练时间）；推理侧vLLM-Omni、Cache-DiT+量化。</p>
+          <span class="source">§5，Figure11-15，Table7-9，第33-49页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">推理流程</div>
+          <h3>两步推理</h3>
+          <p>1. 用户输入→Reasoner做prompt上采样→结构化JSON；2. 结构化prompt→Generator生成图像/视频/动作；支持单GPU到多GPU高吞吐部署。</p>
+          <span class="source">§5.3，§6.3，第45-49/73-74页</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="original-figures">
+      <div class="section-head"><h2>6. 论文原图与原表精读</h2><p>所有截图均为精确裁剪的原图/原表，包含看什么、说明什么、不要误读三层解读</p></div>
+      <div class="cards">
+        <article class="card full">
+          <div class="kicker">Figure 1 · 统一能力图</div>
+          <h3>Cosmos 3作为物理AI通用骨干</h3>
+          <div class="paper-figure">
+            <div class="paper-shot">
+              <img src="paper-assets/figure-1-overview-crop.png?v=1" alt="Figure 1: Cosmos 3 unified capabilities" loading="lazy">
+            </div>
+            <div class="paper-notes">
+              <div class="note-block"><b>看什么</b><p>中心是Cosmos3全模态世界模型，上方输入5种模态（语言/图像/视频/音频/动作），下方输出覆盖6种模型类：VLM、图像生成、音视频生成、策略/WAM、前向动力学、逆向动力学。</p></div>
+              <div class="note-block"><b>说明什么</b><p>过去需要6个独立模型完成的任务，现在可以通过同一个架构+轻量后训练实现，终结模型碎片化。</p></div>
+              <div class="note-block"><b>不要误读</b><p>不是单个checkpoint同时做所有事，而是同一套MoT架构，不同输入输出配置+少量后训练即可覆盖所有能力，大部分参数共享。</p></div>
+              <span class="source">原图/原表：Figure 1，第5页</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card full">
+          <div class="kicker">Figure 2 · 训练落地流程</div>
+          <h3>Cosmos 3作为物理AI强起点</h3>
+          <div class="paper-figure">
+            <div class="paper-shot">
+              <img src="paper-assets/figure-2-pipeline-crop.png?v=1" alt="Figure 2: Training and deployment pipeline" loading="lazy">
+            </div>
+            <div class="paper-notes">
+              <div class="note-block"><b>看什么</b><p>流程是：Pre-Training+Mid-Training得到通用Cosmos3基础模型，Post-Training分三个方向：Synthetic Data Generation（合成数据）、Task-Specific Specialization（任务专属：T2I/I2V/Policy/Interactive Env）。</p></div>
+              <div class="note-block"><b>说明什么</b><p>Cosmos3是通用基础模型，不需要改架构就能适配所有下游物理AI场景，中期训练已经加入了动作模态，不是纯视觉预训练。</p></div>
+              <div class="note-block"><b>不要误读</b><p>Interactive Environment（闭环训练环境）是未来方向，论文主要展示了合成数据和任务专属两个方向的结果。</p></div>
+              <span class="source">原图/原表：Figure 2，第6页</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card full">
+          <div class="kicker">Table 1 · 结果总览</div>
+          <h3>Cosmos 3全面SOTA</h3>
+          <div class="paper-figure">
+            <div class="paper-shot">
+              <img src="paper-assets/table-1-results-overview.png?v=1" alt="Table 1: Results overview" loading="lazy">
+            </div>
+            <div class="paper-notes">
+              <div class="note-block"><b>看什么</b><p>列是各项能力（通用推理、机器人、基建、驾驶、T2I、T2V、I2V、音频、机器人FD、Policy），行是Cosmos3变体和对比模型（开源+闭源）；*是后训练版本，†是闭源模型，灰色表示模型不具备该能力。</p></div>
+              <div class="note-block"><b>说明什么</b><p>Cosmos3-Super/Nano在几乎所有能力上超过开源专用模型，很多项甚至超过闭源模型，验证了统一架构的有效性。</p></div>
+              <div class="note-block"><b>不要误读</b><p>Policy和部分T2I/T2V分数是后训练版本结果，不是基础预训练模型零样本结果。</p></div>
+              <span class="source">原图/原表：Table 1，第6页</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card full">
+          <div class="kicker">Figure 5 · MoT架构</div>
+          <h3>Mixture-of-Transformers核心架构</h3>
+          <div class="paper-figure">
+            <div class="paper-shot">
+              <img src="paper-assets/figure-5-mot-architecture-crop.png?v=1" alt="Figure 5: MoT architecture" loading="lazy">
+            </div>
+            <div class="paper-notes">
+              <div class="note-block"><b>看什么</b><p>左侧：输入分AR子序列（语言+ViT视觉，结尾&lt;EOS&gt;&lt;BOG&gt;）和DM子序列（VAE视觉+音频+动作）；每个Transformer层有独立LayerNorm/MLP，但共享自注意力；右侧：注意力mask——AR是因果三角掩码，DM是全注意力（看所有AR+DM token）。</p></div>
+              <div class="note-block"><b>说明什么</b><p>这是论文最核心的架构创新：双塔共享注意力，既保留VLM的AR推理能力，又让扩散生成充分访问prompt上下文，同时保证AR永远不会被DM token更新，不破坏语言生成因果性。</p></div>
+              <div class="note-block"><b>不要误读</b><p>AR和DM不是两个完全独立的模型，它们共享注意力算子，只是LN、投影、MLP参数独立，两套参数都从同一个预训练VLM初始化。</p></div>
+              <span class="source">原图/原表：Figure 5，第11页</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card full">
+          <div class="kicker">Figure 6 · MRoPE位置编码</div>
+          <h3>带绝对时间调制的3D多模态位置编码</h3>
+          <div class="paper-figure">
+            <div class="paper-shot">
+              <img src="paper-assets/figure-6-mrope-crop.png?v=1" alt="Figure 6: 3D MRoPE" loading="lazy">
+            </div>
+            <div class="paper-notes">
+              <div class="note-block"><b>看什么</b><p>左侧：坐标分配示例——语言token t=h=w，视频token t/h/w三维，音频/动作只有t维度(h=w=0)，还有模态偏移k；右侧：FPS调制——16/24/30FPS下相同物理时间对应相同位置范围，不是按token计数。</p></div>
+              <div class="note-block"><b>说明什么</b><p>解决了不同帧率视频、不同采样率音频/动作对齐到统一物理时间轴的问题，是音视频同步生成、视频动作对齐的关键；时间间隙设计解决了初始帧棋盘格伪影。</p></div>
+              <div class="note-block"><b>不要误读</b><p>h和w维度是给视觉空间的，不是所有模态都用三维位置，音频和动作只有时间维度。</p></div>
+              <span class="source">原图/原表：Figure 6，第13页</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card full">
+          <div class="kicker">Table 2 · 模型变体</div>
+          <h3>Cosmos 3模型尺寸规格</h3>
+          <div class="paper-figure">
+            <div class="paper-shot">
+              <img src="paper-assets/table-2-model-variants.png?v=1" alt="Table 2: Model variants" loading="lazy">
+            </div>
+            <div class="paper-notes">
+              <div class="note-block"><b>看什么</b><p>三个变体：Edge(28层/2048隐层/2B稠密骨干/4B总参数)、Nano(36层/4096/8B/16B)、Super(64层/5120/32B/64B)；KV heads都是8，head dim都是128。</p></div>
+              <div class="note-block"><b>说明什么</b><p>覆盖从端侧部署到数据中心推理全场景，都是稠密模型（没有MoE），统一使用MoT架构；Edge是从头训练，Nano/Super从Qwen3-VL初始化。</p></div>
+              <div class="note-block"><b>不要误读</b><p>总参数大约是稠密骨干的2倍，因为有Reasoner和Generator两套独立的LN/MLP/投影参数。</p></div>
+              <span class="source">原图/原表：Table 2，第14页</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card full">
+          <div class="kicker">Figure 11 · 基础设施栈</div>
+          <h3>Cosmos 3全栈平台</h3>
+          <div class="paper-figure">
+            <div class="paper-shot">
+              <img src="paper-assets/figure-11-infrastructure-crop.png?v=1" alt="Figure 11: Infrastructure stack" loading="lazy">
+            </div>
+            <div class="paper-notes">
+              <div class="note-block"><b>看什么</b><p>四大支柱：Data Infrastructure→Training Infrastructure→Serving Infrastructure→Benchmark Infrastructure，是完整工业级平台。</p></div>
+              <div class="note-block"><b>说明什么</b><p>Cosmos3不是只靠模型架构创新，全栈工程优化是训练出这么大模型并高效部署的关键，也是NVIDIA工业界能力的体现。</p></div>
+              <div class="note-block"><b>不要误读</b><p>这不是小团队可以复现的工作量，完整平台包含数据处理、分布式训练、推理服务、评测一整套系统。</p></div>
+              <span class="source">原图/原表：Figure 11，第33页</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card full">
+          <div class="kicker">Table 11 · T2I结果</div>
+          <h3>文生图开源SOTA</h3>
+          <div class="paper-figure">
+            <div class="paper-shot">
+              <img src="paper-assets/table-11-t2i-results.png?v=1" alt="Table 11: Text-to-Image results" loading="lazy">
+            </div>
+            <div class="paper-notes">
+              <div class="note-block"><b>看什么</b><p>UniGenBench分数，分原始prompt(Orig)和Physical AI prompt(Phys)，Cosmos3-Super-Text2Image在两者上都超过Qwen-Image-2512。</p></div>
+              <div class="note-block"><b>说明什么</b><p>后训练的T2I模型是开源最强，且在Physical AI相关prompt上优势明显，符合物理AI世界模型定位。</p></div>
+              <div class="note-block"><b>不要误读</b><p>Gemini 3 Pro Image是闭源模型，分数更高，但Cosmos3在开源模型中排名第一。</p></div>
+              <span class="source">原图/原表：Table 11，第55页</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card full">
+          <div class="kicker">Table 19 · 机器人策略结果</div>
+          <h3>RoboLab-120 SOTA</h3>
+          <div class="paper-figure">
+            <div class="paper-shot">
+              <img src="paper-assets/table-19-policy-results.png?v=1" alt="Table 19: Robotics policy results" loading="lazy">
+            </div>
+            <div class="paper-notes">
+              <div class="note-block"><b>看什么</b><p>RoboLab-120任务成功率，按语言特异性（L1-L3）和任务难度（Easy/Hard）分块，Cosmos3-Nano-Policy-DROID全面超过π0.5和Ctrl-World基线。</p></div>
+              <div class="note-block"><b>说明什么</b><p>从通用MT-init中期训练模型出发，在DROID数据上后训练得到的策略模型达到SOTA，验证了统一模型作为机器人策略起点的有效性。</p></div>
+              <div class="note-block"><b>不要误读</b><p>这是在DROID数据上后训练的结果，不是零样本策略，MT-init比PT-init（预训练直接初始化）适配快很多。</p></div>
+              <span class="source">原图/原表：Table 19，第68页</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card full">
+          <div class="kicker">Figure 26 · RoboArena排名</div>
+          <h3>真实世界机器人基准第一</h3>
+          <div class="paper-figure">
+            <div class="paper-shot">
+              <img src="paper-assets/figure-26-roboarena-crop.png?v=1" alt="Figure 26: RoboArena leaderboard" loading="lazy">
+            </div>
+            <div class="paper-notes">
+              <div class="note-block"><b>看什么</b><p>2026-05-30 RoboArena真实世界机器人基准排行榜截图，Cosmos3-Nano-Policy-DROID排名第一。</p></div>
+              <div class="note-block"><b>说明什么</b><p>第三方真实世界（非仿真）评测验证了策略模型的实际落地效果，不是只在实验室基准上好。</p></div>
+              <div class="note-block"><b>不要误读</b><p>RoboArena是真实机器人评测，leaderboard排名会随时间变化，这是论文提交时的结果。</p></div>
+              <span class="source">原图/原表：Figure 26，第69页</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="experiments">
+      <div class="section-head"><h2>7. 实验与证据</h2><p>多维度实验验证架构、训练策略、下游迁移、第三方评测的有效性</p></div>
+      <div class="cards">
+        <article class="card green wide">
+          <div class="kicker">理解能力</div>
+          <h3>多模态理解基准领先</h3>
+          <p>在通用多模态理解、机器人、智能基建、自动驾驶四大类Reasoner基准上，Cosmos3-Super达到73.7分，超过Qwen3-VL-32B(72.8)、Gemma-4-31B(69.8)等开源VLM。</p>
+          <span class="source">Table10，第51页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">生成能力</div>
+          <h3>T2I/I2V竞技场第一</h3>
+          <p>Cosmos3-Super-Text2Image在Artificial Analysis开源T2I排名#1（含闭源#4），Image2Video在开源I2V排名#1。</p>
+          <span class="source">Figure18/19，第56/60页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">物理合理性</div>
+          <h3>Physics-IQ领先</h3>
+          <p>在Physics-IQ物理合理性基准上，Cosmos3-Super-I2V超过Wan2.2-A14B和Veo-3.1（闭源），物理一致性更强。</p>
+          <span class="source">Table13，第58页</span>
+        </article>
+        <article class="card blue">
+          <div class="kicker">动作与策略</div>
+          <h3>机器人策略SOTA</h3>
+          <p>Cosmos3-Nano-Policy-DROID在RoboLab-120达到39.7%成功率，超过π0.5(28.1%)和Ctrl-World(23.0%)，真实世界RoboArena排名第一。</p>
+          <span class="source">Table1/19，Figure26，第6/68/69页</span>
+        </article>
+        <article class="card wide">
+          <div class="kicker">迁移能力</div>
+          <h3>快速下游适配</h3>
+          <p>从MT-init（中期训练）出发，在LIBERO-10新具身上 fast adaptation 显著快于PT-init（预训练直接初始化），证明统一动作预训练提供了强先验。</p>
+          <span class="source">Table20，第70页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">消融实验</div>
+          <h3>合成数据有效</h3>
+          <p>消融实验证明五大SDG合成数据集显著提升Physical AI领域生成和策略效果，验证了Cosmos3作为合成数据引擎的价值。</p>
+          <span class="source">Appendix C.7，第104页</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="pitfalls">
+      <div class="section-head"><h2>8. 难点、误区与失败模式</h2><p>六个常见理解误区和工程难点，避免踩坑</p></div>
+      <div class="cards">
+        <article class="card red">
+          <div class="kicker">误区1</div>
+          <h3>AR和DM是两个独立模型？</h3>
+          <p>错误：它们共享注意力算子，只是LN/投影/MLP参数独立，初始都来自同一VLM；AR永远不被DM更新是关键设计，否则会破坏语言生成因果性。</p>
+          <span class="source">§2.3，第11页</span>
+        </article>
+        <article class="card red">
+          <div class="kicker">失败模式1</div>
+          <h3>初始帧棋盘格伪影</h3>
+          <p>如果DM token直接接在AR最后一个token后面，时间位置太近会导致过饱和和棋盘格伪影，论文通过插入15000固定时间间隙解决。</p>
+          <span class="source">§2.4.1，第13页</span>
+        </article>
+        <article class="card red">
+          <div class="kicker">失败模式2</div>
+          <h3>多帧率不对齐</h3>
+          <p>不做FPS调制会导致不同帧率视频/音频/动作的时间步对应不同物理时间，引发音视频不同步、动作视频不对齐，这是多模态模型常见工程陷阱。</p>
+          <span class="source">§2.4.2，第13页</span>
+        </article>
+        <article class="card red">
+          <div class="kicker">误区2</div>
+          <h3>动作就是关节角度？</h3>
+          <p>错误：Cosmos3不用底层PID/关节角度，而是用SE(3)相对位姿伪动作+6D旋转表示，避开具身底层控制差异，才能跨领域统一。</p>
+          <span class="source">§2.1.3，第8页</span>
+        </article>
+        <article class="card red">
+          <div class="kicker">难点1</div>
+          <h3>数据过滤阈值权衡</h3>
+          <p>AI judge阈值太高会导致能力分布坍缩（如指代表达接地被过度过滤），太低保留噪声；预训练用阈值2保覆盖(78%保留)，SFT用阈值5保精度(46%保留)。</p>
+          <span class="source">§3.1.1，第16-17页</span>
+        </article>
+        <article class="card red">
+          <div class="kicker">误区3</div>
+          <h3>总参数等于稠密骨干？</h3>
+          <p>错误：因为双塔独立参数，总参数约是稠密Transformer骨干的2倍（如Nano是8B稠密骨干，16B总参数）。</p>
+          <span class="source">§2.5，Table2，第14页</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="applications">
+      <div class="section-head"><h2>9. 落地价值</h2><p>五大落地应用场景，覆盖机器人、自动驾驶、内容创作、合成数据、空间智能</p></div>
+      <div class="cards">
+        <article class="card green wide">
+          <div class="kicker">场景1</div>
+          <h3>通用机器人（家庭/工业/仓储）</h3>
+          <p>用Cosmos3-Nano-Policy作为基础模型，少量目标场景数据后训练得到机械臂/人形/移动机器人策略，支持语言指令→动作→世界预测闭环；同时用生成的合成交互数据提升训练效率，配套SDG-RobotSim/SDG-Warehouse数据集。</p>
+          <span class="source">Table19-20，§4.2.5，第31/68/70页</span>
+        </article>
+        <article class="card blue">
+          <div class="kicker">场景2</div>
+          <h3>自动驾驶</h3>
+          <p>作为世界模型做前向动力学（预测未来）、逆向动力学（推断轨迹）、视频迁移（HD map/边缘/分割→逼真场景），配套SDG-DriveSim数据集生成Corner case。</p>
+          <span class="source">Figure21-23，Table17-18，第64-67页</span>
+        </article>
+        <article class="card amber">
+          <div class="kicker">场景3</div>
+          <h3>内容创作与数字人</h3>
+          <p>Cosmos3-Super-Text2Image/Image2Video作为开源SOTA生成模型，配合音视频同步生成能力做文生图、图生视频、数字人视频，配套SDG-SynHuman数据集。</p>
+          <span class="source">Figure17/20，Table11-15，第54-62页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">场景4</div>
+          <h3>物理AI合成数据引擎</h3>
+          <p>生成高保真、物理合理的合成交互场景，解决真实世界数据采集贵、慢、危险的问题，是论文明确的三大短期核心价值之一。</p>
+          <span class="source">§1，Appendix C，第6/97-105页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">场景5</div>
+          <h3>智能基建/空间智能</h3>
+          <p>多模态理解能力支持监控视频分析、基础设施巡检、3D空间接地等场景，Reasoner SFT数据专门覆盖该领域。</p>
+          <span class="source">§3.1.2，Table10，第17/51页</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="final">
+      <h2>终极总结</h2>
+      <p>NVIDIA Cosmos 3通过Mixture-of-Transformers双塔架构、统一几何动作表示、带绝对时间调制的3D MRoPE三大核心创新，首次在单一开源框架内统一了物理AI所需的语言/图像/视频/音频/动作全模态理解与生成能力，在多个基准达到开源SOTA，配套完整全栈基础设施和开源资源，为通用物理AI agent提供了可扩展的通用骨干，有望成为连接合成世界与真实世界的桥梁。</p>
+    </section>
+  </main>
+</body>
+</html>

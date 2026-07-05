@@ -1,0 +1,13 @@
+[
+  {
+    "id": "paper-cosmos3",
+    "htmlFile": "Cosmos3-paper-cards.html",
+    "title": "Cosmos 3: Omnimodal World Models for Physical AI",
+    "authors": ["NVIDIA"],
+    "venue": "NVIDIA",
+    "year": 2026,
+    "tags": ["World Model", "Physical AI", "Multimodal", "Robotics"],
+    "thumbnail": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cosmos%20world%20model%20physical%20AI%20robotics%20autonomous%20driving%20multimodal%20unified%20architecture&image_size=landscape_4_3",
+    "abstract": "NVIDIA推出的全模态世界模型家族，首次在单一Mixture-of-Transformers架构内统一语言、图像、视频、音频、动作五大模态的理解与生成，终结物理AI领域模型碎片化范式。"
+  }
+]

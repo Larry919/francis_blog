@@ -1,0 +1,74 @@
+{
+  "items": [
+    {
+      "name": "figure-1-overview-crop",
+      "page": 5,
+      "box": [60, 440, 535, 675],
+      "kind": "figure",
+      "note": "Figure 1 body only: Cosmos 3 as unified Physical AI backbone."
+    },
+    {
+      "name": "figure-2-pipeline-crop",
+      "page": 6,
+      "box": [60, 100, 535, 225],
+      "kind": "figure",
+      "note": "Figure 2 body only: training pipeline (pre-training, mid-training, post-training)."
+    },
+    {
+      "name": "table-1-results-overview",
+      "page": 6,
+      "box": [60, 300, 535, 700],
+      "kind": "table",
+      "note": "Table 1: Cosmos 3 results overview across capabilities."
+    },
+    {
+      "name": "figure-5-mot-architecture-crop",
+      "page": 11,
+      "box": [60, 85, 535, 460],
+      "kind": "figure",
+      "note": "Figure 5: Mixture-of-Transformers (MoT) core architecture diagram."
+    },
+    {
+      "name": "figure-6-mrope-crop",
+      "page": 13,
+      "box": [60, 85, 535, 275],
+      "kind": "figure",
+      "note": "Figure 6: Multimodal 3D MRoPE position embedding illustration."
+    },
+    {
+      "name": "table-2-model-variants",
+      "page": 14,
+      "box": [60, 440, 535, 500],
+      "kind": "table",
+      "note": "Table 2: Cosmos3-Nano and Cosmos3-Super model variant specifications."
+    },
+    {
+      "name": "figure-11-infrastructure-crop",
+      "page": 33,
+      "box": [60, 140, 530, 230],
+      "kind": "figure",
+      "note": "Figure 11: Cosmos 3 infrastructure stack overview."
+    },
+    {
+      "name": "table-11-t2i-results",
+      "page": 55,
+      "box": [60, 80, 535, 145],
+      "kind": "table",
+      "note": "Table 11: Text-to-Image benchmark results on UniGenBench."
+    },
+    {
+      "name": "table-19-policy-results",
+      "page": 68,
+      "box": [60, 335, 535, 380],
+      "kind": "table",
+      "note": "Table 19: Robotics policy results on RoboLab-120."
+    },
+    {
+      "name": "figure-26-roboarena-crop",
+      "page": 69,
+      "box": [60, 330, 535, 485],
+      "kind": "figure",
+      "note": "Figure 26: RoboArena leaderboard #1 ranking."
+    }
+  ]
+}
