@@ -20,5 +20,16 @@
     "tags": ["World Model", "Physical AI", "Multimodal", "Robotics"],
     "thumbnail": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cosmos%20world%20model%20physical%20AI%20robotics%20autonomous%20driving%20multimodal%20unified%20architecture&image_size=landscape_4_3",
     "abstract": "NVIDIA推出的全模态世界模型家族，首次在单一Mixture-of-Transformers架构内统一语言、图像、视频、音频、动作五大模态的理解与生成，终结物理AI领域模型碎片化范式。"
+  },
+  {
+    "id": "paper-hippocampus-linear-attention",
+    "htmlFile": "HOLA-paper-cards.html",
+    "title": "A Hippocampus for Linear Attention: An Exact Memory for What the Recurrent State Forgets",
+    "authors": ["Wanyun Cui"],
+    "venue": "arXiv",
+    "year": 2026,
+    "tags": ["Linear Attention", "State Space Model", "Long Context", "Memory Architecture", "Efficient LLM"],
+    "thumbnail": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hippocampus%20inspired%20dual%20memory%20system%20linear%20attention%20compressive%20state%20episodic%20cache%20neural%20network%20architecture%20academic%20illustration&image_size=landscape_4_3",
+    "abstract": "受互补学习系统理论启发，为线性注意力添加海马体式有界精确KV缓存（HOLA），通过预测残差β*||e||驱动的无学习写入策略和解耦RMSNorm-gamma锐利读取，340M模型Wikitext PPL从27.32降至22.92（-16.1%），超越全注意力Transformer++，RULER长程召回鲁棒扩展至32k tokens。"
   }
 ]

@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HOLA 论文卡片精读 - Francis's Academic Blog</title>
+  <style>
+    :root {
+      --paper: #f8f0df;
+      --ink: #17130d;
+      --muted: #756b5b;
+      --line: rgba(23, 19, 13, .15);
+      --blue: #1f55e5;
+      --green: #2f7d56;
+      --red: #c94b3c;
+      --amber: #f1b13f;
+      --shadow: 0 28px 80px rgba(41, 29, 8, .12);
+      --radius: 28px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 4%, rgba(31, 85, 229, .25), transparent 28rem),
+        radial-gradient(circle at 92% 12%, rgba(47, 125, 86, .20), transparent 30rem),
+        linear-gradient(135deg, #fbf5e8 0%, #eee2cd 100%);
+      font-family: "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(23, 19, 13, .035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(23, 19, 13, .025) 1px, transparent 1px);
+      background-size: 32px 32px;
+      z-index: -1;
+    }
+    a { color: inherit; text-decoration: none; }
+    .page { width: min(1220px, calc(100% - 36px)); margin: 0 auto; }
+    .hero {
+      min-height: 88vh;
+      display: grid;
+      grid-template-columns: 1.16fr .84fr;
+      gap: 28px;
+      align-items: end;
+      padding: 56px 0 42px;
+    }
+    .hero-main, .stat-card, .card {
+      border: 1px solid var(--line);
+      background: rgba(255, 250, 240, .74);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+    .hero-main { padding: clamp(28px, 5vw, 56px); border-radius: 42px; }
+    .eyebrow {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 18px 0;
+      max-width: 900px;
+      font-size: clamp(36px, 6vw, 72px);
+      line-height: .92;
+      letter-spacing: -.055em;
+    }
+    .hero-subtitle {
+      max-width: 760px;
+      color: #453d31;
+      font-size: clamp(16px, 1.8vw, 20px);
+      line-height: 1.75;
+      margin: 0;
+    }
+    .hero-side { display: grid; gap: 18px; }
+    .stat-card { padding: 24px; border-radius: 30px; }
+    .stat-card b {
+      display: block;
+      color: var(--blue);
+      font-size: 42px;
+      line-height: 1;
+      letter-spacing: -.05em;
+    }
+    .stat-card span { display: block; margin-top: 8px; color: var(--muted); line-height: 1.55; font-size: 14px; }
+    .stat-card.green b { color: var(--green); }
+    .stat-card.red b { color: var(--red); }
+    .nav {
+      position: sticky;
+      top: 56px;
+      z-index: 20;
+      margin-bottom: 26px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 250, 240, .82);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 14px 40px rgba(41, 29, 8, .08);
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+    }
+    .nav a {
+      flex: 0 0 auto;
+      padding: 10px 14px;
+      border-radius: 999px;
+      color: #4f4639;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .nav a:hover { background: var(--blue); color: white; }
+    section { margin: 44px 0; scroll-margin-top: 152px; }
+    .section-head {
+      display: flex;
+      gap: 18px;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(28px, 4.2vw, 50px);
+      line-height: .95;
+      letter-spacing: -.055em;
+    }
+    .section-head p { max-width: 540px; color: var(--muted); line-height: 1.7; margin: 0; font-size: 14.5px; }
+    .cards { display: grid; grid-template-columns: repeat(12, 1fr); gap: 18px; }
+    .card {
+      grid-column: span 4;
+      min-height: 200px;
+      padding: 22px;
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .card.wide { grid-column: span 8; }
+    .card.full { grid-column: 1 / -1; }
+    .card.blue { background: linear-gradient(135deg, #143fc1, #1f55e5); color: white; }
+    .card.dark { background: #16130e; color: #fff6e7; }
+    .card.green { background: linear-gradient(135deg, #266749, #359066); color: white; }
+    .card.red { background: linear-gradient(135deg, #b23b31, #d95a45); color: white; }
+    .card.amber { background: linear-gradient(135deg, #f1b13f, #f7d58a); }
+    .card.blue p, .card.dark p, .card.green p, .card.red p,
+    .card.blue li, .card.dark li, .card.green li, .card.red li,
+    .card.blue .source, .card.dark .source, .card.green .source, .card.red .source {
+      color: rgba(255, 255, 255, .85);
+    }
+    .kicker {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .blue .kicker, .dark .kicker, .green .kicker, .red .kicker { color: rgba(255,255,255,.70); }
+    h3 { margin: 0 0 10px; font-size: 21px; line-height: 1.12; letter-spacing: -.03em; }
+    p, li { color: #50483a; line-height: 1.7; font-size: 14.5px; }
+    ul { padding-left: 18px; margin: 8px 0; }
+    li { margin-bottom: 6px; }
+    .source {
+      display: inline-flex;
+      margin-top: 12px;
+      padding: 5px 10px;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      opacity: .82;
+    }
+    .formula {
+      padding: 16px;
+      border-radius: 18px;
+      background: #17130d;
+      color: #fff4df;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      overflow-x: auto;
+      line-height: 1.7;
+      margin: 12px 0;
+      font-size: 13px;
+    }
+    .paper-figure {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(260px, .92fr);
+      gap: 16px;
+      align-items: stretch;
+    }
+    .paper-shot {
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #fff;
+      max-height: 680px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .paper-shot img {
+      display: block;
+      max-width: 100%;
+      max-height: 680px;
+      object-fit: contain;
+      background: #fff;
+    }
+    .paper-notes { display: grid; gap: 10px; align-content: start; }
+    .note-block {
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      padding: 13px;
+      background: rgba(255,255,255,.55);
+    }
+    .note-block b { display: block; margin-bottom: 4px; color: var(--blue); font-size: 13px; }
+    .note-block p { margin: 0; font-size: 13px; line-height: 1.6; }
+    .final {
+      margin: 56px 0 72px;
+      padding: clamp(26px, 5vw, 50px);
+      border-radius: 42px;
+      background: #17130d;
+      color: #fff5e4;
+      box-shadow: var(--shadow);
+    }
+    .final h2 {
+      margin: 0 0 16px;
+      font-size: clamp(30px, 4.5vw, 56px);
+      line-height: .95;
+      letter-spacing: -.055em;
+    }
+    .final p { color: rgba(255,255,255,.82); font-size: 19px; line-height: 1.75; margin: 0; }
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(248, 240, 223, .92);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--line);
+      padding: 0 24px;
+    }
+    .site-header-inner {
+      max-width: 1220px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+    .site-logo {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -.04em;
+      color: var(--ink);
+    }
+    .site-nav { display: flex; gap: 24px; align-items: center; }
+    .site-nav a {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--muted);
+      transition: color .2s;
+    }
+    .site-nav a:hover, .site-nav a.active { color: var(--blue); }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--blue);
+      margin-bottom: 20px;
+    }
+    .back-link:hover { opacity: .7; }
+    .back-link svg { width: 16px; height: 16px; }
+    .paper-links { display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
+    .paper-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.6);
+      transition: all .2s;
+    }
+    .paper-link-btn:hover { background: var(--blue); color: white; border-color: var(--blue); }
+    @media (max-width: 980px) {
+      .hero, .paper-figure { grid-template-columns: 1fr; }
+      .card, .card.wide { grid-column: 1 / -1; }
+      .section-head { display: block; }
+      .section-head p { margin-top: 10px; }
+    }
+    @media (max-width: 640px) {
+      .page { width: min(100% - 22px, 1220px); }
+      .hero { padding-top: 24px; }
+      .hero-main, .final { border-radius: 30px; }
+      .nav { border-radius: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a href="../index.html" class="site-logo">Francis</a>
+      <nav class="site-nav">
+        <a href="../index.html">首页</a>
+        <a href="../papers.html" class="active">论文解读</a>
+        <a href="../blog.html" class="nav-hide-sm">博客</a>
+        <a href="../about.html" class="nav-hide-sm">关于我</a>
+      </nav>
+    </div>
+  </header>
+  <main class="page">
+    <a href="../papers.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      返回论文列表
+    </a>
+    <header class="hero">
+      <div class="hero-main">
+        <div class="eyebrow">arXiv 2026 · cs.AI · Paper Explainer</div>
+        <h1>HOLA: 给线性注意力一个海马体</h1>
+        <p class="hero-subtitle">线性注意力和状态空间模型将前缀压缩为固定大小循环状态，获得O(1)内存优势的代价是记忆有损——当多个KV关联竞争时，早期事实被覆盖，针式召回（needle recall）退化。受互补学习系统理论启发，HOLA（Hippocampal Linear Attention）为线性注意力添加海马体补充：保留delta-rule状态作为压缩记忆，同时加入有界精确KV缓存，形成半参数化测试时记忆。缓存写入无需学习驱逐模块，保留预测残差大的token；解耦RMSNorm-gamma读取实现锐利检索。340M参数模型上Wikitext PPL从27.32降至22.92（-16.1%），超越全注意力Transformer++（26.88），RULER长程召回鲁棒扩展至32k tokens。</p>
+        <div class="paper-links">
+          <a href="https://arxiv.org/abs/2607.02303" target="_blank" class="paper-link-btn">📄 arXiv 论文</a>
+        </div>
+      </div>
+      <aside class="hero-side">
+        <div class="stat-card green"><b>-16.1%</b><span>Wikitext PPL降幅：27.32→22.92，甚至低于全注意力Transformer++（26.88）</span></div>
+        <div class="stat-card"><b>32k</b><span>RULER针在干草堆召回长度（训练长度仅2k，16倍外推）</span></div>
+        <div class="stat-card blue"><b>O(1)+B</b><span>内存复杂度：固定状态 + 有界缓存B，保持线性推理效率</span></div>
+      </aside>
+    </header>
+
+    <nav class="nav" aria-label="页面目录">
+      <a href="#position">定位</a>
+      <a href="#logic">框架</a>
+      <a href="#claims">结论</a>
+      <a href="#method">方法</a>
+      <a href="#flows">流程</a>
+      <a href="#original-figures">示意图</a>
+      <a href="#experiments">实验</a>
+      <a href="#pitfalls">难点</a>
+      <a href="#applications">落地</a>
+    </nav>
+
+    <section id="position">
+      <div class="section-head"><h2>1. 论文定位</h2><p>属于高效语言模型架构领域，解决线性注意力的记忆瓶颈问题</p></div>
+      <div class="cards">
+        <article class="card blue">
+          <div class="kicker">领域</div>
+          <h3>线性注意力 / 状态空间模型</h3>
+          <p>线性注意力（Linear Attention）和状态空间模型（SSM如Mamba）通过将前缀压缩为固定大小循环状态实现O(1)推理内存，是长上下文高效建模的主流方向。但其固定大小状态本质上是有损压缩。</p>
+          <span class="source">§1 Introduction, 第1页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">核心问题</div>
+          <h3>为什么线性注意力"健忘"？</h3>
+          <p>Delta-rule更新机制在新KV对到来时覆盖旧关联。当多个键值对竞争有限的状态容量时，早期事实被渐进擦除，导致"大海捞针"式检索在长上下文上严重退化。这不是参数规模问题，而是架构性记忆瓶颈。</p>
+          <span class="source">§1-§2, 第1-3页</span>
+        </article>
+        <article class="card amber">
+          <div class="kicker">跨学科灵感</div>
+          <h3>互补学习系统（CLS）</h3>
+          <p>受脑神经科学中互补学习系统理论启发：哺乳动物大脑的新皮层（neocortex）通过缓慢学习形成压缩的结构化记忆，而海马体（hippocampus）快速存储具体情节记忆，两者互补。HOLA将这一思想映射到线性注意力架构中。</p>
+          <span class="source">§3 Method, 第3-4页</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="logic">
+      <div class="section-head"><h2>2. 全文框架</h2><p>神经科学启发→双记忆架构→写入/读取机制→实验验证</p></div>
+      <div class="cards">
+        <article class="card wide">
+          <div class="kicker">论证结构</div>
+          <h3>四个层次的递进论证</h3>
+          <p><b>第一层 诊断（§2）</b>：分析delta-rule状态的覆盖机制，精确定位记忆退化的根源——状态容量有限导致旧关联被新关联"写覆盖"<br>
+          <b>第二层 设计（§3）</b>：提出HOLA双记忆系统——压缩状态（新皮层类比）+ 有界精确KV缓存（海马体类比），设计无学习写入策略和解耦读取机制<br>
+          <b>第三层 实现（§3.2-3.3）</b>：基于预测残差β*||e||的token重要性判据 + RMSNorm-gamma解耦的锐利检索<br>
+          <b>第四层 验证（§4）</b>：PPL基准→上下文检索→RULER长程召回→消融实验</p>
+          <span class="source">全文结构, 第1-12页</span>
+        </article>
+        <article class="card dark">
+          <div class="kicker">记忆分工</div>
+          <h3>压缩记忆 vs 精确记忆</h3>
+          <p><b>压缩状态（新皮层）</b>：delta-rule更新，建模线性可压缩的统计结构和模式<br>
+          <b>精确缓存（海马体）</b>：存储不应被强制通过瓶颈的KV对，支持精确回忆<br>
+          两者在测试时动态组合，形成半参数化记忆</p>
+          <span class="source">§3, 第3-5页</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="claims">
+      <div class="section-head"><h2>3. 核心结论</h2><p>六个经过实验验证的核心发现</p></div>
+      <div class="cards">
+        <article class="card red">
+          <div class="kicker">Conclusion 1</div>
+          <h3>PPL降低16.1%，超越全注意力</h3>
+          <p>Wikitext PPL从27.32（线性注意力基线）降至22.92（HOLA），甚至低于全注意力Transformer++的26.88。这是罕见的高效架构在标准语言建模指标上超越全注意力的案例。</p>
+          <span class="source">Table 1, 第7页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Conclusion 2</div>
+          <h3>32k tokens长程召回鲁棒</h3>
+          <p>在RULER针在干草堆测试中，HOLA在32k上下文长度（训练长度2k的16倍外推）上保持高召回率，显著优于GDN和匹配的HOLA+recency cache基线。</p>
+          <span class="source">§4.2, Figure 3, 第8-9页</span>
+        </article>
+        <article class="card green">
+          <div class="kicker">Conclusion 3</div>
+          <h3>最佳线性上下文检索</h3>
+          <p>在多个上下文检索基准上，HOLA实现了线性注意力模型中的最佳性能，证明精确缓存有效弥补了压缩状态的信息损失。</p>
+          <span class="source">§4.2, 第8页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Conclusion 4</div>
+          <h3>无学习驱逐策略有效</h3>
+          <p>基于预测残差β*||e||的简单写入准则无需训练额外的驱逐模块，却能有效选择"哪些token值得精确记住"。大残差意味着该token的信息未被压缩状态很好吸收，因此值得缓存。</p>
+          <span class="source">§3.2, Table 2消融, 第5,8页</span>
+        </article>
+        <article class="card blue">
+          <div class="kicker">Conclusion 5</div>
+          <h3>RMSNorm-gamma解耦是关键</h3>
+          <p>简单的缓存KV与状态输出相加会导致"软平均"效应，检索结果模糊。解耦RMSNorm的gamma参数使缓存读取能够实现"锐利"检索，而非被状态输出稀释。</p>
+          <span class="source">§3.3, 第5-6页</span>
+        </article>
+        <article class="card amber">
+          <div class="kicker">Conclusion 6</div>
+          <h3>半参数化记忆双赢</h3>
+          <p>压缩状态捕获可泛化的统计结构（如语法、常见事实），精确缓存保留不可压缩的具体信息（如随机ID、罕见实体），两者互补而非互斥，实现效率与准确性的双赢。</p>
+          <span class="source">§5 Discussion, 第10-11页</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="method">
+      <div class="section-head"><h2>4. 方法精讲</h2><p>双记忆系统的写入、读取和组合机制</p></div>
+      <div class="cards">
+        <article class="card wide">
+          <div class="kicker">Tech Point 1</div>
+          <h3>Delta-rule压缩状态（新皮层）</h3>
+          <p>HOLA保留线性注意力的标准delta-rule更新作为压缩记忆：S_t = S_{t-1} + β·(v_t - S_{t-1}·k_t)·k_t^T。其中S是固定大小的状态矩阵，β是学习率，k_t和v_t是当前token的键和值。这种更新天然具有"覆盖"性质：新信息渐进地写入状态，旧信息在容量不足时被擦除。</p>
+          <div class="formula">S_t = S_{t-1} + β · (v_t − S_{t-1} k_t) ⊗ k_t</div>
+          <span class="source">§2 Background, 第2-3页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Tech Point 2</div>
+          <h3>预测残差：记忆"惊奇度"</h3>
+          <p>写入缓存的决策基于预测残差e_t = v_t - S_{t-1}·k_t，即当前值与状态预测之间的差异。β*||e||大意味着该token的信息不能被现有状态很好地预测/压缩，因此值得精确存储在缓存中。这是一种信息论驱动的"重要性"度量。</p>
+          <span class="source">§3.2, 第4-5页</span>
+        </article>
+        <article class="card wide dark">
+          <div class="kicker">Formula</div>
+          <h3>缓存写入准则</h3>
+          <div class="formula">write_score_t = β_t · ‖e_t‖ = β_t · ‖v_t − S_{t-1} k_t‖<br><br>if write_score_t > τ and |cache| < B:<br>  cache.append( (k_t, v_t) )<br>else if write_score_t > min_score in cache:<br>  evict min_score token, insert (k_t, v_t)</div>
+          <p>当缓存未满时直接写入；当缓存满时，驱逐残差最小的token（最"不意外"的、已被状态吸收的信息）。阈值τ和缓存大小B是超参数。</p>
+          <span class="source">§3.2, Algorithm 1, 第5页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Tech Point 3</div>
+          <h3>为什么不用学习驱逐？</h3>
+          <p>学习驱逐模块（如可训练的gating网络）增加训练复杂度和不稳定性。预测残差是delta-rule更新的"免费副产品"——它直接度量了信息被状态压缩的程度，天然适合作为缓存重要性的判据，无需额外参数。</p>
+          <span class="source">§3.2, 第4-5页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Tech Point 4</div>
+          <h3>解耦RMSNorm-gamma读取</h3>
+          <p>标准做法是将缓存注意力输出y_cache与状态输出y_state直接相加，但这导致两者在同一数值尺度上"软平均"，缓存的精确信息被状态的大容量输出稀释。HOLA解耦RMSNorm的gamma缩放参数，使缓存输出有独立的缩放通路，实现锐利检索。</p>
+          <span class="source">§3.3, 第5-6页</span>
+        </article>
+        <article class="card wide">
+          <div class="kicker">Tech Point 5</div>
+          <h3>半参数化输出组合</h3>
+          <p>最终输出为：y = RMSNorm_γ_state(y_state) + RMSNorm_γ_cache(y_cache)。其中y_state = S·q（状态检索，O(1)），y_cache = Attention(q, K_cache, V_cache)（缓存精确注意力，O(B)，B为缓存大小）。两个通路有独立的RMSNorm gamma参数，梯度可以各自流动。</p>
+          <div class="formula">y = γ_state ⊙ RMSNorm(S q) + γ_cache ⊙ RMSNorm(Attention(q, K_cache, V_cache))</div>
+          <span class="source">§3.3 Eq.3-4, 第6页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Tech Point 6</div>
+          <h3>有界缓存O(B)开销</h3>
+          <p>缓存大小B是固定超参数（如1024或2048个token），因此推理时缓存注意力的计算量是常数O(B)，不随序列长度增长。这与全注意力的O(n²)形成鲜明对比，保持了线性注意力的高效性。</p>
+          <span class="source">§3.4, 第6页</span>
+        </article>
+        <article class="card green">
+          <div class="kicker">Tech Point 7</div>
+          <h3>训练目标不变</h3>
+          <p>HOLA不引入新的训练目标或辅助损失。缓存写入策略完全基于前向传播中的预测残差（无需梯度），模型使用标准下一个token预测损失端到端训练。缓存机制在训练和推理时均被激活。</p>
+          <span class="source">§3.4, 第6页</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="flows">
+      <div class="section-head"><h2>5. 训练与部署流程</h2><p>HOLA是轻量级架构改进，训练和部署流程简洁</p></div>
+      <div class="cards">
+        <article class="card">
+          <div class="kicker">Step 1</div>
+          <h3>基于线性注意力初始化</h3>
+          <p>从标准线性注意力/SSM架构出发，添加两个组件：(1)KV缓存数据结构（固定大小B的循环缓冲区），(2)解耦的RMSNorm gamma参数（γ_cache，与γ_state独立）。</p>
+          <span class="source">§3.1, 第4页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Step 2</div>
+          <h3>标准语言模型训练</h3>
+          <p>使用标准下一个token预测损失在15B SlimPajama tokens上训练340M模型。训练过程中缓存机制始终在线——每个token都经过"是否写入缓存"的残差判定。缓存读取参与前向传播和反向传播。</p>
+          <span class="source">§4 Experimental Setup, 第7页</span>
+        </article>
+        <article class="card blue">
+          <div class="kicker">Step 3</div>
+          <h3>推理时双通路检索</h3>
+          <p>每个查询token：(1)通过状态矩阵S进行O(1)检索得到y_state（压缩记忆）；(2)对有界缓存B进行精确注意力得到y_cache（海马体记忆）；(3)两个通路经各自RMSNorm缩放后相加。缓存按残差准则动态更新。</p>
+          <span class="source">§3.3-3.4, 第5-6页</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="original-figures">
+      <div class="section-head"><h2>6. 核心概念可视化</h2><p>关键概念的示意图解（使用AI生成示意图辅助理解）</p></div>
+      <div class="cards">
+        <article class="card full">
+          <div class="kicker">概念图 1 · 双记忆架构</div>
+          <h3>HOLA架构：新皮层压缩状态 + 海马体精确缓存</h3>
+          <div class="paper-figure">
+            <div class="paper-shot">
+              <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=neuroscience%20inspired%20AI%20architecture%20diagram%20showing%20two%20memory%20systems%20hippocampus%20episodic%20cache%20and%20neocortex%20compressive%20state%20linear%20attention%20dual%20pathway%20academic%20illustration&image_size=landscape_16_9" alt="HOLA Dual Memory Architecture" loading="lazy">
+            </div>
+            <div class="paper-notes">
+              <div class="note-block"><b>看什么</b><p>左侧"新皮层"通路：输入token经delta-rule更新固定大小状态矩阵S，提供压缩记忆（O(1)检索）。右侧"海马体"通路：预测残差大的token被写入有界KV缓存，提供精确记忆（O(B)检索）。底部两个通路经解耦RMSNorm后组合输出。</p></div>
+              <div class="note-block"><b>说明什么</b><p>这是互补学习系统理论在神经网络架构中的直接映射。状态S对应新皮层——缓慢学习统计规律，泛化能力强但细节有损；缓存对应海马体——快速存储具体事件，精确但容量有限。两者不是替代关系而是互补。</p></div>
+              <div class="note-block"><b>不要误读</b><p>缓存不是"全注意力的后门"——缓存大小B是固定常数（如1024），不随序列长度增长，因此整体复杂度仍为O(n)而非O(n²)。缓存存储的是经过残差筛选的重要token，不是全部历史。</p></div>
+              <span class="source">概念示意图，对应 §3 Figure 1 架构图</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card full">
+          <div class="kicker">概念图 2 · 覆盖问题</div>
+          <h3>Delta-rule状态覆盖：旧记忆如何被新信息擦除</h3>
+          <div class="paper-figure">
+            <div class="paper-shot">
+              <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=memory%20overwrite%20interference%20diagram%20fixed%20size%20state%20matrix%20new%20information%20overwriting%20old%20associations%20linear%20attention%20catastrophic%20forgetting%20visualization%20academic&image_size=landscape_16_9" alt="Delta-rule Memory Overwrite" loading="lazy">
+            </div>
+            <div class="paper-notes">
+              <div class="note-block"><b>看什么</b><p>固定大小的状态矩阵S像一块有限大小的黑板：新KV对通过delta-rule写入时，如果状态容量已饱和，旧的键值关联会被覆盖。随着序列增长，早期token的信息被渐进擦除，导致"大海捞针"失败。</p></div>
+              <div class="note-block"><b>说明什么</b><p>这不是bug而是delta-rule的设计特性——它本质上是一个在线学习器，自适应地跟踪输入分布。但当需要同时记住多个独立事实时（如文档开头的随机ID号），覆盖机制就成了致命缺陷。</p></div>
+              <div class="note-block"><b>不要误读</b><p>覆盖不是均匀的——与当前上下文高度相关的信息更容易被保留，无关信息更快被擦除。这导致了"新近性偏差"（recency bias）：模型更容易记住最近的内容，遗忘较早的内容。</p></div>
+              <span class="source">概念示意图，对应 §2 问题分析</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card full">
+          <div class="kicker">概念图 3 · 预测残差</div>
+          <h3>预测残差β*||e||：哪些token值得被海马体记住？</h3>
+          <div class="paper-figure">
+            <div class="paper-shot">
+              <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=prediction%20residual%20error%20visualization%20surprise%20metric%20neural%20network%20unexpected%20tokens%20vs%20predictable%20tokens%20histogram%20distribution%20academic%20diagram%20machine%20learning&image_size=landscape_16_9" alt="Prediction Residual Writing Criterion" loading="lazy">
+            </div>
+            <div class="paper-notes">
+              <div class="note-block"><b>看什么</b><p>常见词（如"the"、"is"）的预测残差小——状态已很好地学会它们的模式，不需要缓存。罕见实体、随机ID、关键事实的预测残差大——状态未能有效压缩这些信息，需要精确存入缓存。</p></div>
+              <div class="note-block"><b>说明什么</b><p>β*||e||本质上度量了"这个token给状态带来了多少新信息"。大残差=信息论上的"惊喜"（surprise），意味着现有压缩记忆未能捕获该信息。将这些"惊喜"token存入缓存，恰好弥补了压缩状态的盲区。</p></div>
+              <div class="note-block"><b>不要误读</b><p>残差大不代表token"重要"（如噪声也可能引起大残差）。但在自然语言中，大残差通常对应有意义的不可预测信息（如实体名、数字、关键论断），这也是为什么这个简单判据在实践中有效的原因。</p></div>
+              <span class="source">概念示意图，对应 §3.2 写入策略</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card full">
+          <div class="kicker">概念图 4 · 锐利检索</div>
+          <h3>解耦RMSNorm-gamma：为什么直接相加会导致模糊检索</h3>
+          <div class="paper-figure">
+            <div class="paper-shot">
+              <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=RMSNorm%20gamma%20scaling%20decoupled%20readout%20sharp%20retrieval%20vs%20soft%20averaging%20comparison%20diagram%20attention%20output%20combination%20academic%20machine%20learning&image_size=landscape_16_9" alt="Decoupled RMSNorm Readout" loading="lazy">
+            </div>
+            <div class="paper-notes">
+              <div class="note-block"><b>看什么</b><p>左图（直接相加）：y_cache（精确但小）与y_state（模糊但大）直接相加，缓存信号被状态的大量级输出淹没，结果接近纯状态输出——检索"软"而模糊。右图（解耦gamma）：两个通路有独立缩放γ_cache和γ_state，缓存输出可以在需要时被放大，实现锐利检索。</p></div>
+              <div class="note-block"><b>说明什么</b><p>这是一个精妙的工程洞见：简单的残差连接在数值尺度不匹配时失效。y_state来自大状态矩阵的乘积，量级远大于缓存注意力输出。解耦RMSNorm归一化后用独立gamma缩放，让模型学会何时信任状态、何时信任缓存。</p></div>
+              <div class="note-block"><b>不要误读</b><p>γ_cache不是手动设置的——它通过反向传播学习，模型自动学会在不同上下文位置动态调整两个通路的相对权重。这比简单的残差连接更灵活。</p></div>
+              <span class="source">概念示意图，对应 §3.3 读取机制</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="experiments">
+      <div class="section-head"><h2>7. 实验与证据</h2><p>三层递进验证：PPL基准→长程检索→消融分析</p></div>
+      <div class="cards">
+        <article class="card wide">
+          <div class="kicker">Evidence · Language Modeling</div>
+          <h3>Wikitext PPL：超越全注意力Transformer++</h3>
+          <p>HOLA在340M参数规模上Wikitext-103 PPL=22.92，比线性注意力基线27.32降低16.1%，甚至低于全注意力Transformer++的26.88。LAMBADA PPL从30.95改善至30.26。这一结果非同寻常——高效架构通常需要在PPL上付出代价，但HOLA通过更好的记忆机制反而提升了语言建模质量。</p>
+          <span class="source">Table 1, 第7页</span>
+        </article>
+        <article class="card green">
+          <div class="kicker">Evidence · Long Context</div>
+          <h3>RULER 32k鲁棒召回</h3>
+          <p>RULER基准测试在长上下文中检索特定信息（"大海捞针"变体）。HOLA在32k tokens长度（训练长度2k的16倍外推）上保持高召回率，显著优于GDN（Gated DeltaNet）和HOLA+recency cache（只缓存最近token的消融版本）。</p>
+          <span class="source">§4.2 Figure 3, 第8-9页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Evidence · Ablation</div>
+          <h3>各组件的必要性</h3>
+          <p>消融实验显示：(1)去掉缓存→PPL退化到基线；(2)用recency写入替代残差写入→长程召回下降；(3)去掉解耦gamma直接相加→检索变模糊，PPL回升；(4)缓存大小B增大→性能单调提升但收益递减。每个组件都有明确贡献。</p>
+          <span class="source">Table 2, 第8页</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="pitfalls">
+      <div class="section-head"><h2>8. 难点、误区与失败模式</h2><p>容易踩的坑和方法边界</p></div>
+      <div class="cards">
+        <article class="card red">
+          <div class="kicker">Failure Mode 1</div>
+          <h3>误区：缓存越大越好</h3>
+          <p>不完全正确。增大缓存B确实提升性能，但存在边际递减，且过大的B增加推理开销。关键不是缓存大小，而是写入策略是否选对了token——一个好的选择策略用小缓存就能匹敌大缓存。</p>
+          <span class="source">Table 2 缓存大小消融, 第8页</span>
+        </article>
+        <article class="card red">
+          <div class="kicker">Failure Mode 2</div>
+          <h3>误区：直接相加就够了</h3>
+          <p>错。如果将缓存输出直接加到状态输出而不解耦RMSNorm，缓存信号因数值量级小被状态输出"淹没"，检索效果接近纯状态模型。解耦gamma是必要的工程细节。</p>
+          <span class="source">§3.3 + Table 2 消融, 第5-6,8页</span>
+        </article>
+        <article class="card red">
+          <div class="kicker">Failure Mode 3</div>
+          <h3>误区：新近性缓存足够</h3>
+          <p>只缓存最近B个token（recency cache）不能解决早期信息遗忘问题。RULER实验显示recency cache在长上下文检索上远不如残差驱动的写入策略，因为重要信息可能出现在上下文任何位置。</p>
+          <span class="source">§4.2 Figure 3, 第9页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Limitation 1</div>
+          <h3>规模验证有限</h3>
+          <p>所有实验在340M参数规模完成。HOLA在更大规模（如7B、70B）是否同样有效？gamma解耦和残差写入策略是否需要随规模调整？这些问题尚未验证。</p>
+          <span class="source">§5 局限性讨论, 第11页</span>
+        </article>
+        <article class="card">
+          <div class="kicker">Limitation 2</div>
+          <h3>缓存驱逐是贪心的</h3>
+          <p>当前驱逐策略只看单个token的残差分数，不考虑token间的协同/冗余关系。两个中等残差的token可能组合起来携带关键信息，但贪心驱逐可能逐个移除它们。全局最优的缓存选择是未来方向。</p>
+          <span class="source">§5 Discussion, 第11页</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="applications">
+      <div class="section-head"><h2>9. 落地价值</h2><p>HOLA的实用场景和工程意义</p></div>
+      <div class="cards">
+        <article class="card blue">
+          <div class="kicker">Application 1</div>
+          <h3>长上下文RAG/文档问答</h3>
+          <p>检索增强生成系统常需要从长文档中精确引用具体信息（数字、日期、名称）。HOLA的精确缓存机制天然适合这类"大海捞针"场景，同时保持线性注意力的O(n)效率，适合处理100k+文档。</p>
+          <span class="source">基于§4.2 RULER结果推断</span>
+        </article>
+        <article class="card green">
+          <div class="kicker">Application 2</div>
+          <h3>边缘/端侧长文本推理</h3>
+          <p>固定状态大小O(1) + 有界缓存O(B)的内存模式非常适合内存受限的边缘设备。相比全注意力O(n²)的内存增长，HOLA可以在手机/嵌入式设备上运行长上下文推理。</p>
+          <span class="source">基于§3.4复杂度分析推断</span>
+        </article>
+        <article class="card amber">
+          <div class="kicker">Application 3</div>
+          <h3>多轮对话长期记忆</h3>
+          <p>对话系统需要记住对话早期提到的关键信息（用户偏好、约束条件）。HOLA的海马体缓存可以选择性保存这些重要信息，避免被后续对话轮次覆盖，且无需外部记忆模块。</p>
+          <span class="source">基于§1动机和§3方法综合推断</span>
+        </article>
+        <article class="card wide dark">
+          <div class="kicker">Engineering Impact</div>
+          <h3>架构启示：脑神经科学可以指导AI系统设计</h3>
+          <p>HOLA证明了一个深刻观点：高效AI架构不一定需要全新的数学发明——借鉴大脑经过进化验证的记忆分工策略（海马体/新皮层互补），可以解决工程上的实际瓶颈。核心代码改动量估计不超过200行：添加一个KV缓存、一个残差计算、一个解耦gamma参数。这种"生物启发+极简工程"的范式值得在更多架构设计中借鉴。</p>
+          <span class="source">基于§1引言和§5讨论综合</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="final">
+      <h2>终极总结</h2>
+      <p>HOLA受互补学习系统理论启发，为线性注意力架构添加了一个"海马体"——有界精确KV缓存。通过基于预测残差β*||e||的无学习写入策略，自动选择"状态未能压缩的惊奇信息"存入缓存；通过解耦RMSNorm-gamma的读取机制，实现缓存与状态的锐利组合而非模糊平均。在340M参数规模上，HOLA将Wikitext PPL降低16.1%至22.92，超越全注意力Transformer++，并在32k tokens（训练长度16倍）的RULER长程召回上保持鲁棒。核心洞见是：线性注意力的"健忘"不是容量问题而是架构问题——给压缩记忆补充一个小而精确的"海马体"缓存，就能在保持O(1)+O(B)效率的同时获得接近完美的长程记忆能力。</p>
+    </section>
+  </main>
+</body>
+</html>
